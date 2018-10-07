@@ -117,9 +117,6 @@ class VM
     bool _running = false;
 
     void _eval();
-    inline uint8_t _readByte();
-    inline int16_t _readShort();
-    inline int32_t _readInt();
 };
 
 #endif // __VM_H__
