@@ -1,2 +1,2 @@
 # cpp-vm
-A simple VM in C++ (WIP)
+A simple bytecode VM in C++ (WIP)
