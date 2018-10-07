@@ -23,17 +23,16 @@ void VM::run()
 
     while (this->_running)
     {
-        this->_eval(this->_program[this->_registers[IP]]);
-        this->_registers[IP]++;
+        this->_eval();
     }
 
     this->_registers[IP] = 0;
     this->_registers[SP] = 0;
 }
 
-void VM::_eval(uint8_t instruction)
+void VM::_eval()
 {
-    switch (instruction)
+    switch (this->_program[this->_registers[IP]])
     {
     case MOV:
     {
@@ -484,6 +483,8 @@ void VM::_eval(uint8_t instruction)
         break;
     }
     }
+
+    this->_registers[IP]++;
 }
 
 uint8_t VM::_readByte()
