@@ -1,5 +1,43 @@
 from data import REGISTERS, Opcodes, labels, label_instances
 
+def process_file(path):
+    bytecode = bytearray()
+    f = open(path, "r", encoding="utf-8")
+
+    line = f.readline()
+    line_count = 0
+
+    while line != "":
+        line_count += 1
+        line = line.lstrip().rstrip()
+
+        if line.startswith(";") or len(line) == 0: # comment or empty
+            pass
+        elif line.startswith(">"): # data
+            pass
+        elif line.startswith(".") and line.endswith(":") and len(line) > 2: # labels
+            label = line[1:-1]
+            if label in labels:
+                raise ValueError("Label {} is already defined".format(label))
+            labels[label] = len(bytecode)
+        else: # regular opcode
+            process_instruction(bytecode, line)
+
+        line = f.readline()
+
+    f.close()
+    replace_label_instances(bytecode)
+
+    return bytecode
+
+def print_bytecode(bytecode):
+    print(", ".join("0x{:02X}".format(b) for b in bytecode))
+
+def write_bytecode(bytecode, path):
+    f = open(path, "wb")
+    f.write(bytecode)
+    f.close()
+
 def str_to_int(s, bytecode, bytes_ahead=0):
     if len(s) == 3 and s.startswith("'") and s.endswith("'"):
         return ord(s[1])

@@ -292,7 +292,7 @@ void VM::_eval()
         const uint8_t reg = _NEXT_BYTE;
         const int16_t addr = _NEXT_SHORT;
 
-        if (this->_registers[reg] = !0)
+        if (this->_registers[reg] != 0)
             this->_registers[IP] = addr - 1;
         break;
     }

@@ -1,12 +1,25 @@
 #include "vm.h"
 
-const uint8_t test1[] = {
-    0xB0, 0x11, 0x00, 0x88, 0x02, 0x00, 0xD1, 0x02, 0xD3, 0x80, 0x00, 0xB7, 0x00, 0x01, 0x03, 0x00, 0xFF, 0x12, 0x00, 0x01, 0x12, 0x01, 0x0B, 0x12, 0x02, 0x02, 0xB0, 0x03, 0x00
-};
-
-int main()
+int main(int argc, char *argv[])
 {
-    VM vm(test1, NULL, 0, 0);
+    if (argc != 2)
+    {
+        printf("Usage: %s bin_file\n", argv[0]);
+        return 1;
+    }
+
+    uint8_t *program;
+
+    FILE *f = fopen(argv[1], "rb");
+    fseek(f, 0, SEEK_END);
+    long fileLen = ftell(f);
+    rewind(f);
+
+    program = (uint8_t *)malloc(fileLen);
+    fread(program, fileLen, 1, f);
+    fclose(f);
+
+    VM vm(program, NULL, 0, 0);
     vm.run();
 
     return 0;
