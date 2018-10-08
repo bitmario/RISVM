@@ -71,14 +71,17 @@ enum Instructions
     PRINTI,       // print an integer stored in a register, e.g.: printi ax
     PRINTF,       // print a float stored in a register, e.g.: printf ax
     PRINTLN,      // print a newline, e.g.: println
-    I2S,          // convert an int stored in a register to a string in a specific address, e.g.: i2s ax, 0x20 0x00
-    S2I,          // convert a string at the specified address to an int in a register, e.g.: s2i 0x20 0x00, ax
+    I2S,          // convert an int stored in a register to a string in a specific address, e.g.: i2s 0x20 0x00, ax
+    S2I,          // convert a string at the specified address to an int in a register, e.g.: s2i ax, 0x20 0x00
     // Arduino:
+    // TODO: pinMode()
     A_DR = 0xE0, // digital read from a pin to a register, e.g.: dr ax, 0x0A
     A_AR,        // analog read from a pin to a register, e.g.: ar ax, 0x0A
     A_DW,        // digital write to a pin (on/off), e.g.: dw 0xA, 0x1
     A_AW,        // analog write a short value to a pin, e.g.: aw 0xA, 0xFF 0x00
+    A_DWR,       // digital write with a value from a register, e.g.: dwr 0xA, bx
     A_AWR,       // analog write with a value from a register, e.g.: awr 0xA, bx
+    A_PM,        // set pin mode, e.g.: a_pm 0xA, 0x0
     // system:
     SYSCALL = 0xF0,
     HALT = 0xFF // halt execution

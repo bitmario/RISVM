@@ -1,3 +1,5 @@
-/.vscode
+.vscode/
+__pycache__/
+*.pyc
 *.o
 vm

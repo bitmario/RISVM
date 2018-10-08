@@ -404,15 +404,15 @@ void VM::_eval()
     }
     case I2S:
     {
-        const uint8_t reg = _NEXT_BYTE;
         const int16_t addr = _NEXT_SHORT;
+        const uint8_t reg = _NEXT_BYTE;
         sprintf((char *)&this->_data[addr], "%d", this->_registers[reg]);
         break;
     }
     case S2I:
     {
-        const int16_t addr = _NEXT_SHORT;
         const uint8_t reg = _NEXT_BYTE;
+        const int16_t addr = _NEXT_SHORT;
         sscanf((char *)&this->_data[addr], "%d", &this->_registers[reg]);
         break;
     }
@@ -468,6 +468,19 @@ void VM::_eval()
 
         break;
     }
+    case A_DWR:
+    {
+        const uint8_t pin = _NEXT_BYTE;
+        const uint8_t reg = _NEXT_BYTE;
+
+#ifdef ARDUINO
+        digitalWrite(pin, this->_registers[reg]);
+#else
+        printf("set pin %d to D%d\n", pin, this->_registers[reg]);
+#endif
+
+        break;
+    }
     case A_AWR:
     {
         const uint8_t pin = _NEXT_BYTE;
@@ -477,6 +490,19 @@ void VM::_eval()
         analogWrite(pin, this->_registers[reg]);
 #else
         printf("set pin %d to A%d\n", pin, this->_registers[reg]);
+#endif
+
+        break;
+    }
+    case A_PM:
+    {
+        const uint8_t pin = _NEXT_BYTE;
+        const uint8_t mode = _NEXT_BYTE;
+
+#ifdef ARDUINO
+        pinMode(pin, mode);
+#else
+        printf("set pin %d to mode %d\n", pin, mode);
 #endif
 
         break;
