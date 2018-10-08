@@ -1,8 +1,8 @@
 #include "vm.h"
 
 #define _NEXT_BYTE this->_program[++this->_registers[IP]]
-#define _NEXT_SHORT (int16_t) _NEXT_BYTE | ((int16_t)_NEXT_BYTE << 8)
-#define _NEXT_INT (int32_t) _NEXT_BYTE | ((int32_t)_NEXT_BYTE << 8) | ((int32_t)_NEXT_BYTE << 16) | ((int32_t)_NEXT_BYTE << 24)
+#define _NEXT_SHORT ((int16_t) _NEXT_BYTE | ((int16_t)_NEXT_BYTE << 8))
+#define _NEXT_INT ((int32_t) _NEXT_BYTE | ((int32_t)_NEXT_BYTE << 8) | ((int32_t)_NEXT_BYTE << 16) | ((int32_t)_NEXT_BYTE << 24))
 
 VM::VM(const uint8_t *program, const uint8_t *data, int16_t dataSize, int16_t freeBytes)
     : _program(program), _dataSize(dataSize + freeBytes)

@@ -1,4 +1,7 @@
-from enum import IntEnum, auto
+from enum import IntEnum
+
+labels = {}
+label_instances = {}
 
 REGISTERS = {
     "ax": 0,

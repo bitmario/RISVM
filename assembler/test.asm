@@ -1,7 +1,16 @@
 ; testing
-lconsb ax, 0x7F
-nop
-nop
-mov bx, ax
-printi bx
-halt
+    jmp     .entry
+.start:
+    mult    cx, ax
+    printi  cx
+    println
+
+    incr    ax
+    jne     ax, bx, .start
+
+    halt
+.entry:
+    lconsb  ax, 1
+    lconsb  bx, 11
+    lconsb  cx, 2
+    jmp     .start

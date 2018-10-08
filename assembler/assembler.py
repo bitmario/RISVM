@@ -1,5 +1,5 @@
-from data import Opcodes
-from internals import *
+from data import Opcodes, labels
+from internals import process_instruction, replace_label_instances
 
 bytecode = bytearray()
 data = []
@@ -13,21 +13,24 @@ while line != "":
     line_count += 1
     line = line.lstrip().rstrip()
 
-    if line.startswith(";"): # comment
-        line = f.readline()
-        continue
+    if line.startswith(";") or len(line) == 0: # comment or empty
+        pass
     elif line.startswith(">"): # data
-        line = f.readline()
-        continue
+        pass
+    elif line.startswith(".") and line.endswith(":") and len(line) > 2: # labels
+        label = line[1:-1]
+        if label in labels:
+            raise ValueError("Label {} is already defined".format(label))
+        labels[label] = len(bytecode)
     else: # regular opcode
         process_instruction(bytecode, line)
 
     line = f.readline()
 
 f.close()
-bytecodeHex = ""
 
-for b in bytecode:
-    bytecodeHex += "0x{:02X}, ".format(b)
+replace_label_instances(bytecode)
+
+bytecodeHex = ", ".join("0x{:02X}".format(b) for b in bytecode)
 
 print(bytecodeHex)
