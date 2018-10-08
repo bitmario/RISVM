@@ -156,7 +156,7 @@ def process_instruction(bytecode, line):
     else:
         params = []
 
-    if opcode == "nop" and params == []:
+    if opcode == "nop":
         singleop(bytecode, params, Opcodes.NOP)
     elif opcode == "lcons":
         binop_rc(bytecode, params, Opcodes.LCONS, 4)
@@ -276,7 +276,7 @@ def process_instruction(bytecode, line):
         binop_cr(bytecode, params, Opcodes.A_AWR, 1)
     elif opcode == "a_pm":
         binop_cc(bytecode, params, Opcodes.A_PM, 1, 1)
-    elif opcode == "halt" and params == []:
+    elif opcode == "halt":
         singleop(bytecode, params, Opcodes.HALT)
     else:
         raise ValueError("Unknown opcode")
