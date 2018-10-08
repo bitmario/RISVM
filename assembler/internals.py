@@ -150,14 +150,14 @@ def process_instruction(bytecode, line):
         binop_rc(bytecode, params, Opcodes.LOADB, 2)
     elif opcode == "memcpy":
         ternop_ccc(bytecode, params, Opcodes.MEMCPY, 2, 2, 2)
-    elif opcode == "incr":
-        unop(bytecode, params, Opcodes.INCR)
-    elif opcode == "incrf":
-        unop(bytecode, params, Opcodes.INCRF)
-    elif opcode == "decr":
-        unop(bytecode, params, Opcodes.DECR)
-    elif opcode == "decrf":
-        unop(bytecode, params, Opcodes.DECRF)
+    elif opcode == "inc":
+        unop(bytecode, params, Opcodes.INC)
+    elif opcode == "incf":
+        unop(bytecode, params, Opcodes.INCF)
+    elif opcode == "dec":
+        unop(bytecode, params, Opcodes.DEC)
+    elif opcode == "decf":
+        unop(bytecode, params, Opcodes.DECF)
     elif opcode == "add":
         binop(bytecode, params, Opcodes.ADD)
     elif opcode == "addf":
@@ -166,10 +166,10 @@ def process_instruction(bytecode, line):
         binop(bytecode, params, Opcodes.SUB)
     elif opcode == "subf":
         binop(bytecode, params, Opcodes.SUBF)
-    elif opcode == "mult":
-        binop(bytecode, params, Opcodes.MULT)
-    elif opcode == "multf":
-        binop(bytecode, params, Opcodes.MULTF)
+    elif opcode == "mul":
+        binop(bytecode, params, Opcodes.MUL)
+    elif opcode == "mulf":
+        binop(bytecode, params, Opcodes.MULF)
     elif opcode == "div":
         binop(bytecode, params, Opcodes.DIV)
     elif opcode == "divf":

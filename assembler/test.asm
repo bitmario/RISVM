@@ -1,11 +1,11 @@
 ; testing
     jmp     .entry
 .start:
-    mult    cx, ax
+    mul     cx, ax
     printi  cx
     println
 
-    incr    ax
+    inc     ax
     jne     ax, bx, .start
 
     halt

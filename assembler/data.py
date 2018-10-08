@@ -39,16 +39,16 @@ class Opcodes(IntEnum):
     LOADB = 0x67       # copy a byte value from a heap address to a register e.g.: loadb ax 0x08 0x00
     MEMCPY = 0x68      # copy N bytes from one memory address S to another address D e.g.: memcpy 0xDD 0xDD 0xSS 0xSS 0xNN 0xNN
     # arithmetic:
-    INCR = 0x80        # increment the specified register e.g.: incr ax
-    INCRF = 0x81       # increment a float in the specified register e.g.: incrf ax
-    DECR = 0x82        # decrement the specified register e.g.: decr ax
-    DECRF = 0x83       # decrement a float in the specified register e.g.: decrf ax
+    INC = 0x80         # increment the specified register e.g.: inc ax
+    INCF = 0x81        # increment a float in the specified register e.g.: incf ax
+    DEC = 0x82         # decrement the specified register e.g.: dec ax
+    DECF = 0x83        # decrement a float in the specified register e.g.: decf ax
     ADD = 0x84         # sum and store in first reg e.g.: add ax cx
     ADDF = 0x85        # sum two floats and store in first reg e.g.: addf ax cx
     SUB = 0x86         # subtract and store in first reg e.g.: sub ax cx
     SUBF = 0x87        # subtract two floats and store in first reg e.g.: subf ax cx
-    MULT = 0x88        # multiply and store in first reg e.g.: mult ax cx
-    MULTF = 0x89       # multiply two floats and store in first reg e.g.: multf ax cx
+    MUL = 0x88         # multiply and store in first reg e.g.: mul ax cx
+    MULF = 0x89        # multiply two floats and store in first reg e.g.: mulf ax cx
     DIV = 0x8A         # divide and store in first reg e.g.: div ax cx
     DIVF = 0x8B        # divide two floats and store in first reg e.g.: divf ax cx
     MOD = 0x8C         # store division remainder in first reg e.g.: mod ax bx
