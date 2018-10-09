@@ -17,7 +17,7 @@
 
 .loopEnd:
     inc         ax
-    jl          ax, bx, .loopStart
+    jb          ax, bx, .loopStart
 
     
     halt

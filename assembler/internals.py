@@ -54,6 +54,12 @@ def str_to_int(s, bytecode, bytes_ahead=0):
     else:
         return int(s, 10)
 
+def int_to_bytes(val, nbytes):
+    if val < 0:
+        return val.to_bytes(nbytes, 'little', signed=True)
+    else:
+        return val.to_bytes(nbytes, 'little', signed=False)
+
 def register_from_name(s):
     s = s.lower()
     if s not in REGISTERS:
@@ -65,7 +71,7 @@ def replace_label_instances(bytecode):
         if l not in labels:
             raise ValueError("Invalid label {}".format(l))
 
-        label_val = labels[l].to_bytes(2, 'little')
+        label_val = int_to_bytes(labels[l], 2)
         for instance in instances:
             bytecode[instance] = label_val[0]
             bytecode[instance+1] = label_val[1]
@@ -87,7 +93,7 @@ def unop_c(bytecode, params, opcode, nbytes):
         raise ValueError("Operation '{}' expects 1 argument, got {}".format(opcode, len(params)))
     val = str_to_int(params[0], bytecode, 1)
     bytecode.append(opcode)
-    bytecode.extend(val.to_bytes(nbytes, 'little'))
+    bytecode.extend(int_to_bytes(val, nbytes))
 
 def binop(bytecode, params, opcode):
     if len(params) != 2:
@@ -105,7 +111,7 @@ def binop_rc(bytecode, params, opcode, nbytes):
     val = str_to_int(params[1], bytecode, 2)
     bytecode.append(opcode)
     bytecode.append(reg)
-    bytecode.extend(val.to_bytes(nbytes, 'little'))
+    bytecode.extend(int_to_bytes(val, nbytes))
 
 def binop_cr(bytecode, params, opcode, nbytes):
     if len(params) != 2:
@@ -113,7 +119,7 @@ def binop_cr(bytecode, params, opcode, nbytes):
     val = str_to_int(params[0], bytecode, 1)
     reg = register_from_name(params[1])
     bytecode.append(opcode)
-    bytecode.extend(val.to_bytes(nbytes, 'little'))
+    bytecode.extend(int_to_bytes(val, nbytes))
     bytecode.append(reg)
 
 def binop_cc(bytecode, params, opcode, nbytes1, nbytes2):
@@ -122,8 +128,8 @@ def binop_cc(bytecode, params, opcode, nbytes1, nbytes2):
     val1 = str_to_int(params[0], bytecode, 1)
     val2 = str_to_int(params[1], bytecode, 1 + nbytes1)
     bytecode.append(opcode)
-    bytecode.extend(val1.to_bytes(nbytes1, 'little'))
-    bytecode.extend(val2.to_bytes(nbytes2, 'little'))
+    bytecode.extend(int_to_bytes(val1, nbytes1))
+    bytecode.extend(int_to_bytes(val2, nbytes2))
 
 def ternop_ccc(bytecode, params, opcode, nbytes1, nbytes2, nbytes3):
     if len(params) != 3:
@@ -132,9 +138,9 @@ def ternop_ccc(bytecode, params, opcode, nbytes1, nbytes2, nbytes3):
     val2 = str_to_int(params[1], bytecode, 1 + nbytes1)
     val3 = str_to_int(params[2], bytecode, 1 + nbytes1 + nbytes2)
     bytecode.append(opcode)
-    bytecode.extend(val1.to_bytes(nbytes1, 'little'))
-    bytecode.extend(val2.to_bytes(nbytes2, 'little'))
-    bytecode.extend(val3.to_bytes(nbytes3, 'little'))
+    bytecode.extend(int_to_bytes(val1, nbytes1))
+    bytecode.extend(int_to_bytes(val2, nbytes2))
+    bytecode.extend(int_to_bytes(val3, nbytes3))
 
 def ternop_rrc(bytecode, params, opcode, nbytes):
     if len(params) != 3:
@@ -145,7 +151,7 @@ def ternop_rrc(bytecode, params, opcode, nbytes):
     bytecode.append(opcode)
     bytecode.append(reg1)
     bytecode.append(reg2)
-    bytecode.extend(val.to_bytes(nbytes, 'little'))
+    bytecode.extend(int_to_bytes(val, nbytes))
 
 def process_instruction(bytecode, line):
     opcode, sep, params = line.partition(" ")
@@ -206,12 +212,22 @@ def process_instruction(bytecode, line):
         binop(bytecode, params, Opcodes.SUBF)
     elif opcode == "mul":
         binop(bytecode, params, Opcodes.MUL)
-    elif opcode == "mulf":
-        binop(bytecode, params, Opcodes.MULF)
+    elif opcode == "imul":
+        binop(bytecode, params, Opcodes.IMUL)
+    elif opcode == "fmul":
+        binop(bytecode, params, Opcodes.FMUL)
     elif opcode == "div":
         binop(bytecode, params, Opcodes.DIV)
-    elif opcode == "divf":
-        binop(bytecode, params, Opcodes.DIVF)
+    elif opcode == "idiv":
+        binop(bytecode, params, Opcodes.IDIV)
+    elif opcode == "fdiv":
+        binop(bytecode, params, Opcodes.FDIV)
+    elif opcode == "shl":
+        binop(bytecode, params, Opcodes.SHL)
+    elif opcode == "shr":
+        binop(bytecode, params, Opcodes.SHR)
+    elif opcode == "ishr":
+        binop(bytecode, params, Opcodes.ISHR)
     elif opcode == "mod":
         binop(bytecode, params, Opcodes.MOD)
     elif opcode == "and":
@@ -222,6 +238,10 @@ def process_instruction(bytecode, line):
         binop(bytecode, params, Opcodes.XOR)
     elif opcode == "not":
         unop(bytecode, params, Opcodes.NOT)
+    elif opcode == "u2i":
+        unop(bytecode, params, Opcodes.U2I)
+    elif opcode == "i2u":
+        unop(bytecode, params, Opcodes.I2U)
     elif opcode == "i2f":
         unop(bytecode, params, Opcodes.I2F)
     elif opcode == "f2i":
@@ -234,20 +254,24 @@ def process_instruction(bytecode, line):
         binop_rc(bytecode, params, Opcodes.JZ, 2)
     elif opcode == "jnz":
         binop_rc(bytecode, params, Opcodes.JNZ, 2)
-    elif opcode == "jgz":
-        binop_rc(bytecode, params, Opcodes.JGZ, 2)
-    elif opcode == "jlz":
-        binop_rc(bytecode, params, Opcodes.JLZ, 2)
     elif opcode == "je":
         ternop_rrc(bytecode, params, Opcodes.JE, 2)
     elif opcode == "jne":
         ternop_rrc(bytecode, params, Opcodes.JNE, 2)
+    elif opcode == "ja":
+        ternop_rrc(bytecode, params, Opcodes.JA, 2)
     elif opcode == "jg":
         ternop_rrc(bytecode, params, Opcodes.JG, 2)
+    elif opcode == "jae":
+        ternop_rrc(bytecode, params, Opcodes.JAE, 2)
     elif opcode == "jge":
         ternop_rrc(bytecode, params, Opcodes.JGE, 2)
+    elif opcode == "jb":
+        ternop_rrc(bytecode, params, Opcodes.JB, 2)
     elif opcode == "jl":
         ternop_rrc(bytecode, params, Opcodes.JL, 2)
+    elif opcode == "jbe":
+        ternop_rrc(bytecode, params, Opcodes.JBE, 2)
     elif opcode == "jle":
         ternop_rrc(bytecode, params, Opcodes.JLE, 2)
     elif opcode == "print":
@@ -256,6 +280,8 @@ def process_instruction(bytecode, line):
         unop(bytecode, params, Opcodes.PRINTI)
     elif opcode == "printf":
         unop(bytecode, params, Opcodes.PRINTF)
+    elif opcode == "printp":
+        unop(bytecode, params, Opcodes.PRINTP)
     elif opcode == "println":
         singleop(bytecode, params, Opcodes.PRINTLN)
     elif opcode == "i2s":

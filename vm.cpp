@@ -208,7 +208,13 @@ void VM::_eval()
         this->_registers[reg] *= this->_registers[_NEXT_BYTE];
         break;
     }
-    case OP_MULF:
+    case OP_IMUL:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        *((int32_t*)&this->_registers[reg]) *= *((int32_t*)&this->_registers[_NEXT_BYTE]);
+        break;
+    }
+    case OP_FMUL:
     {
         const uint8_t reg = _NEXT_BYTE;
         *((float *)&this->_registers[reg]) *= *((float *)&this->_registers[_NEXT_BYTE]);
@@ -220,10 +226,34 @@ void VM::_eval()
         this->_registers[reg] /= this->_registers[_NEXT_BYTE];
         break;
     }
-    case OP_DIVF:
+    case OP_IDIV:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        *((int32_t*)&this->_registers[reg]) /= *((int32_t*)&this->_registers[_NEXT_BYTE]);
+        break;
+    }
+    case OP_FDIV:
     {
         const uint8_t reg = _NEXT_BYTE;
         *((float *)&this->_registers[reg]) /= *((float *)&this->_registers[_NEXT_BYTE]);
+        break;
+    }
+    case OP_SHL:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        this->_registers[reg] <<= this->_registers[_NEXT_BYTE];
+        break;
+    }
+    case OP_SHR:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        this->_registers[reg] >>= this->_registers[_NEXT_BYTE];
+        break;
+    }
+    case OP_ISHR:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        *((int32_t*)&this->_registers[reg]) >>= this->_registers[_NEXT_BYTE];
         break;
     }
     case OP_MOD:
@@ -254,6 +284,18 @@ void VM::_eval()
     {
         const uint8_t reg = _NEXT_BYTE;
         this->_registers[reg] = ~this->_registers[reg];
+        break;
+    }
+    case OP_U2I:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        *((int32_t *)&this->_registers[reg]) = this->_registers[reg];
+        break;
+    }
+    case OP_I2U:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        this->_registers[reg] = * ((int32_t *)&this->_registers[reg]);
         break;
     }
     case OP_I2F:
@@ -296,24 +338,6 @@ void VM::_eval()
             this->_registers[IP] = addr - 1;
         break;
     }
-    case OP_JGZ:
-    {
-        const uint8_t reg = _NEXT_BYTE;
-        const uint16_t addr = _NEXT_SHORT;
-
-        if (this->_registers[reg] > 0)
-            this->_registers[IP] = addr - 1;
-        break;
-    }
-    case OP_JLZ:
-    {
-        const uint8_t reg = _NEXT_BYTE;
-        const uint16_t addr = _NEXT_SHORT;
-
-        if (this->_registers[reg] < 0)
-            this->_registers[IP] = addr - 1;
-        break;
-    }
     case OP_JE:
     {
         const uint8_t reg1 = _NEXT_BYTE;
@@ -334,7 +358,7 @@ void VM::_eval()
             this->_registers[IP] = addr - 1;
         break;
     }
-    case OP_JG:
+    case OP_JA:
     {
         const uint8_t reg1 = _NEXT_BYTE;
         const uint8_t reg2 = _NEXT_BYTE;
@@ -344,7 +368,17 @@ void VM::_eval()
             this->_registers[IP] = addr - 1;
         break;
     }
-    case OP_JGE:
+    case OP_JG:
+    {
+        const uint8_t reg1 = _NEXT_BYTE;
+        const uint8_t reg2 = _NEXT_BYTE;
+        const uint16_t addr = _NEXT_SHORT;
+
+        if (*((int32_t*)&this->_registers[reg1]) > *((int32_t*)&this->_registers[reg2]))
+            this->_registers[IP] = addr - 1;
+        break;
+    }
+    case OP_JAE:
     {
         const uint8_t reg1 = _NEXT_BYTE;
         const uint8_t reg2 = _NEXT_BYTE;
@@ -354,7 +388,17 @@ void VM::_eval()
             this->_registers[IP] = addr - 1;
         break;
     }
-    case OP_JL:
+    case OP_JGE:
+    {
+        const uint8_t reg1 = _NEXT_BYTE;
+        const uint8_t reg2 = _NEXT_BYTE;
+        const uint16_t addr = _NEXT_SHORT;
+
+        if (*((int32_t*)&this->_registers[reg1]) >= *((int32_t*)&this->_registers[reg2]))
+            this->_registers[IP] = addr - 1;
+        break;
+    }
+    case OP_JB:
     {
         const uint8_t reg1 = _NEXT_BYTE;
         const uint8_t reg2 = _NEXT_BYTE;
@@ -364,7 +408,17 @@ void VM::_eval()
             this->_registers[IP] = addr - 1;
         break;
     }
-    case OP_JLE:
+    case OP_JL:
+    {
+        const uint8_t reg1 = _NEXT_BYTE;
+        const uint8_t reg2 = _NEXT_BYTE;
+        const uint16_t addr = _NEXT_SHORT;
+
+        if (*((int32_t*)&this->_registers[reg1]) < *((int32_t*)&this->_registers[reg2]))
+            this->_registers[IP] = addr - 1;
+        break;
+    }
+    case OP_JBE:
     {
         const uint8_t reg1 = _NEXT_BYTE;
         const uint8_t reg2 = _NEXT_BYTE;
@@ -374,7 +428,35 @@ void VM::_eval()
             this->_registers[IP] = addr - 1;
         break;
     }
+    case OP_JLE:
+    {
+        const uint8_t reg1 = _NEXT_BYTE;
+        const uint8_t reg2 = _NEXT_BYTE;
+        const uint16_t addr = _NEXT_SHORT;
+
+        if (*((int32_t*)&this->_registers[reg1]) <= *((int32_t*)&this->_registers[reg2]))
+            this->_registers[IP] = addr - 1;
+        break;
+    }
     case OP_PRINT:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        printf("%u", this->_registers[reg]);
+        break;
+    }
+    case OP_PRINTI:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        printf("%d", *((int32_t*)&this->_registers[reg]));
+        break;
+    }
+    case OP_PRINTF:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        printf("%f", *((float *)&this->_registers[reg]));
+        break;
+    }
+    case OP_PRINTP:
     {
         const uint32_t addr = this->_registers[_NEXT_BYTE];
         char *curChar = (char *)&this->_data[addr];
@@ -383,18 +465,6 @@ void VM::_eval()
             putchar(*curChar);
             curChar++;
         }
-        break;
-    }
-    case OP_PRINTI:
-    {
-        const uint8_t reg = _NEXT_BYTE;
-        printf("%d", this->_registers[reg]);
-        break;
-    }
-    case OP_PRINTF:
-    {
-        const uint8_t reg = _NEXT_BYTE;
-        printf("%f", *((float *)&this->_registers[reg]));
         break;
     }
     case OP_PRINTLN:

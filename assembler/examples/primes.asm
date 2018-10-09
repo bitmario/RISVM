@@ -7,7 +7,7 @@
     lconsb  cx, 2
 
     .innerLoop:
-        jge     cx, ax, .isPrime
+        jae     cx, ax, .isPrime
 
         mov     dx, ax
         mod     dx, cx
@@ -22,7 +22,7 @@
 
 .loopEnd:
     inc     ax
-    jl      ax, bx, .loop
+    jb      ax, bx, .loop
 
 .end:
     halt
