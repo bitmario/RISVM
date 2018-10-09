@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     rewind(f);
 
     program = (uint8_t *)malloc(fileLen);
-    fread(program, fileLen, 1, f);
+    size_t s = fread(program, fileLen, 1, f);
     fclose(f);
 
     VM vm(program, NULL, 0, 0);
