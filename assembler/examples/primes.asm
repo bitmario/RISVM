@@ -1,5 +1,5 @@
 ; calculate primes below 100000
-; runtime: 12,944s
+; runtime: 11,835s
     lconsb  ax, 1
     lcons   bx, 100000
 
@@ -29,14 +29,14 @@
 
 
 ; C++ equivalent
-; runtime: 1,805s (G++ 7.3.0)
+; runtime: 1,800s (G++ 7.3.0)
 
 ; #include <stdio.h>
 ; #include <stdint.h>
 ; int main() {
-;     for (int32_t num=1; num<100000; num++) {
+;     for (uint32_t num=1; num<100000; num++) {
 ;         bool isPrime = true;
-;         for (int32_t i=2; i<num; i++) {
+;         for (uint32_t i=2; i<num; i++) {
 ;             if (num % i == 0) {
 ;                 isPrime = false;
 ;                 break;

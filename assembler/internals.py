@@ -65,7 +65,7 @@ def replace_label_instances(bytecode):
         if l not in labels:
             raise ValueError("Invalid label {}".format(l))
 
-        label_val = labels[l].to_bytes(2, 'little', signed=True)
+        label_val = labels[l].to_bytes(2, 'little')
         for instance in instances:
             bytecode[instance] = label_val[0]
             bytecode[instance+1] = label_val[1]
@@ -87,7 +87,7 @@ def unop_c(bytecode, params, opcode, nbytes):
         raise ValueError("Operation '{}' expects 1 argument, got {}".format(opcode, len(params)))
     val = str_to_int(params[0], bytecode, 1)
     bytecode.append(opcode)
-    bytecode.extend(val.to_bytes(nbytes, 'little', signed=True))
+    bytecode.extend(val.to_bytes(nbytes, 'little'))
 
 def binop(bytecode, params, opcode):
     if len(params) != 2:
@@ -105,7 +105,7 @@ def binop_rc(bytecode, params, opcode, nbytes):
     val = str_to_int(params[1], bytecode, 2)
     bytecode.append(opcode)
     bytecode.append(reg)
-    bytecode.extend(val.to_bytes(nbytes, 'little', signed=True))
+    bytecode.extend(val.to_bytes(nbytes, 'little'))
 
 def binop_cr(bytecode, params, opcode, nbytes):
     if len(params) != 2:
@@ -113,7 +113,7 @@ def binop_cr(bytecode, params, opcode, nbytes):
     val = str_to_int(params[0], bytecode, 1)
     reg = register_from_name(params[1])
     bytecode.append(opcode)
-    bytecode.extend(val.to_bytes(nbytes, 'little', signed=True))
+    bytecode.extend(val.to_bytes(nbytes, 'little'))
     bytecode.append(reg)
 
 def binop_cc(bytecode, params, opcode, nbytes1, nbytes2):
@@ -122,8 +122,8 @@ def binop_cc(bytecode, params, opcode, nbytes1, nbytes2):
     val1 = str_to_int(params[0], bytecode, 1)
     val2 = str_to_int(params[1], bytecode, 1 + nbytes1)
     bytecode.append(opcode)
-    bytecode.extend(val1.to_bytes(nbytes1, 'little', signed=True))
-    bytecode.extend(val2.to_bytes(nbytes2, 'little', signed=True))
+    bytecode.extend(val1.to_bytes(nbytes1, 'little'))
+    bytecode.extend(val2.to_bytes(nbytes2, 'little'))
 
 def ternop_ccc(bytecode, params, opcode, nbytes1, nbytes2, nbytes3):
     if len(params) != 3:
@@ -132,9 +132,9 @@ def ternop_ccc(bytecode, params, opcode, nbytes1, nbytes2, nbytes3):
     val2 = str_to_int(params[1], bytecode, 1 + nbytes1)
     val3 = str_to_int(params[2], bytecode, 1 + nbytes1 + nbytes2)
     bytecode.append(opcode)
-    bytecode.extend(val1.to_bytes(nbytes1, 'little', signed=True))
-    bytecode.extend(val2.to_bytes(nbytes2, 'little', signed=True))
-    bytecode.extend(val3.to_bytes(nbytes3, 'little', signed=True))
+    bytecode.extend(val1.to_bytes(nbytes1, 'little'))
+    bytecode.extend(val2.to_bytes(nbytes2, 'little'))
+    bytecode.extend(val3.to_bytes(nbytes3, 'little'))
 
 def ternop_rrc(bytecode, params, opcode, nbytes):
     if len(params) != 3:
@@ -145,7 +145,7 @@ def ternop_rrc(bytecode, params, opcode, nbytes):
     bytecode.append(opcode)
     bytecode.append(reg1)
     bytecode.append(reg2)
-    bytecode.extend(val.to_bytes(nbytes, 'little', signed=True))
+    bytecode.extend(val.to_bytes(nbytes, 'little'))
 
 def process_instruction(bytecode, line):
     opcode, sep, params = line.partition(" ")

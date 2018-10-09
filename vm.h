@@ -33,6 +33,7 @@ enum Instructions
     OP_LOADB,       // copy a byte value from a heap address to a register, e.g.: loadb ax, 0x08 0x00
     OP_MEMCPY,      // copy N bytes from one memory address S to another address D, e.g.: memcpy 0xDD 0xDD, 0xSS 0xSS, 0xNN 0xNN
     // arithmetic:
+    // TODO: add signed/unsigned operators and logical/arithmetic shifts
     OP_INC = 0x80, // increment the specified register, e.g.: inc ax
     OP_INCF,       // increment a float in the specified register, e.g.: incf ax
     OP_DEC,        // decrement the specified register, e.g.: dec ax
@@ -107,16 +108,16 @@ enum Registers
 class VM
 {
   public:
-    VM(const uint8_t *program, const uint8_t *data, int16_t dataSize, int16_t zeroBytes = 0);
+    VM(const uint8_t *program, const uint8_t *data, uint16_t dataSize, uint16_t zeroBytes = 0);
     ~VM();
     void run();
 
   protected:
     const uint8_t *_program;
     uint8_t *_data;
-    int32_t _stack[VM_STACK_SIZE] = {0};
-    int32_t _registers[REGISTERS_MAX] = {0};
-    int16_t _dataSize = 0;
+    uint32_t _stack[VM_STACK_SIZE] = {0};
+    uint32_t _registers[REGISTERS_MAX] = {0};
+    uint16_t _dataSize = 0;
     bool _running = false;
 
     void _eval();
