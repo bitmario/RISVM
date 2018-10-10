@@ -29,8 +29,6 @@ enum Instructions
     OP_STOR = 0x60, // copy a value from a register to a heap address, e.g.: stor 0x08 0x00, ax
     OP_STORW,       // copy a word value from a register to a heap address, e.g.: storw 0x08 0x00, ax
     OP_STORB,       // copy a byte value from a register to a heap address, e.g.: storb 0x08 0x00, ax
-    OP_CSTORS,      // load a constant null-terminated string to the specified memory address. e.g.: cstors 0x10, 0x00, 'H' 'i' '!' 0x00
-    OP_CSTORS_R,    // load a constant null-terminated string to a memory address in a register. e.g.: cstors_r ax, 'H' 'i' '!' 0x00
     OP_LOAD,        // copy a value from a heap address to a register, e.g.: load ax, 0x08 0x00
     OP_LOADW,       // copy a word value from a heap address to a register, e.g.: loadw ax, 0x08 0x00
     OP_LOADB,       // copy a byte value from a heap address to a register, e.g.: loadb ax, 0x08 0x00
@@ -40,24 +38,24 @@ enum Instructions
     OP_INCF,       // increment a float in the specified register, e.g.: incf ax
     OP_DEC,        // decrement the specified register, e.g.: dec ax
     OP_DECF,       // decrement a float in the specified register, e.g.: decf ax
-    OP_ADD,         // sum and store in first reg, e.g.: add ax, cx
-    OP_ADDF,        // sum two floats and store in first reg, e.g.: addf ax, cx
-    OP_SUB,         // subtract and store in first reg, e.g.: sub ax, cx
-    OP_SUBF,        // subtract two floats and store in first reg, e.g.: subf ax, cx
-    OP_MUL,         // multiply and store in first reg, e.g.: mul ax, cx
-    OP_IMUL,        // signed multiply and store in first reg, e.g.: mul ax, cx
-    OP_FMUL,        // multiply two floats and store in first reg, e.g.: mulf ax, cx
-    OP_DIV,         // divide and store in first reg, e.g.: div ax, cx
-    OP_IDIV,        // signed divide and store in first reg, e.g.: div ax, cx
-    OP_FDIV,        // divide two floats and store in first reg, e.g.: divf ax, cx
-    OP_SHL,         // logical shift left, e.g.: shl ax, bx
-    OP_SHR,         // logical shift right, e.g.: shr ax, bx
-    OP_ISHR,        // arithmetic shift right (for signed values), e.g.: ishr ax, bx
-    OP_MOD,         // store division remainder in first reg, e.g.: mod ax, bx
-    OP_AND,         // and two registers and store result in the first one, e.g.: and ax, bx
-    OP_OR,          // or two registers and store result in the first one, e.g.: or ax, bx
-    OP_XOR,         // xor two registers and store result in the first one, e.g.: xor ax, bx
-    OP_NOT,         // not a register and store result, e.g.: not ax
+    OP_ADD,        // sum and store in first reg, e.g.: add ax, cx
+    OP_ADDF,       // sum two floats and store in first reg, e.g.: addf ax, cx
+    OP_SUB,        // subtract and store in first reg, e.g.: sub ax, cx
+    OP_SUBF,       // subtract two floats and store in first reg, e.g.: subf ax, cx
+    OP_MUL,        // multiply and store in first reg, e.g.: mul ax, cx
+    OP_IMUL,       // signed multiply and store in first reg, e.g.: mul ax, cx
+    OP_FMUL,       // multiply two floats and store in first reg, e.g.: mulf ax, cx
+    OP_DIV,        // divide and store in first reg, e.g.: div ax, cx
+    OP_IDIV,       // signed divide and store in first reg, e.g.: div ax, cx
+    OP_FDIV,       // divide two floats and store in first reg, e.g.: divf ax, cx
+    OP_SHL,        // logical shift left, e.g.: shl ax, bx
+    OP_SHR,        // logical shift right, e.g.: shr ax, bx
+    OP_ISHR,       // arithmetic shift right (for signed values), e.g.: ishr ax, bx
+    OP_MOD,        // store division remainder in first reg, e.g.: mod ax, bx
+    OP_AND,        // and two registers and store result in the first one, e.g.: and ax, bx
+    OP_OR,         // or two registers and store result in the first one, e.g.: or ax, bx
+    OP_XOR,        // xor two registers and store result in the first one, e.g.: xor ax, bx
+    OP_NOT,        // not a register and store result, e.g.: not ax
     // conversions:
     OP_U2I = 0xA0, // convert an unsigned integer to a signed integer, e.g.: u2i ax
     OP_I2U,        // convert an signed integer to a unsigned integer, e.g.: i2u ax

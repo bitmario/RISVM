@@ -36,12 +36,10 @@ class Opcodes(IntEnum):
     STOR = 0x60        # copy a value from a register to a heap address e.g.: stor 0x08 0x00 ax
     STORW = 0x61       # copy a word value from a register to a heap address e.g.: storw 0x08 0x00 ax
     STORB = 0x62       # copy a byte value from a register to a heap address e.g.: storb 0x08 0x00 ax
-    CSTORS = 0x63      # load a constant null-terminated string to the specified memory address. e.g.: cstors 0x10 0x00 'H' 'i' '!' 0x00
-    CSTORS_R = 0x64    # load a constant null-terminated string to a memory address in a register. e.g.: cstors_r ax 'H' 'i' '!' 0x00
-    LOAD = 0x65        # copy a value from a heap address to a register e.g.: load ax 0x08 0x00
-    LOADW = 0x66       # copy a word value from a heap address to a register e.g.: loadw ax 0x08 0x00
-    LOADB = 0x67       # copy a byte value from a heap address to a register e.g.: loadb ax 0x08 0x00
-    MEMCPY = 0x68      # copy N bytes from one memory address S to another address D e.g.: memcpy 0xDD 0xDD 0xSS 0xSS 0xNN 0xNN
+    LOAD = 0x63        # copy a value from a heap address to a register e.g.: load ax 0x08 0x00
+    LOADW = 0x64       # copy a word value from a heap address to a register e.g.: loadw ax 0x08 0x00
+    LOADB = 0x65       # copy a byte value from a heap address to a register e.g.: loadb ax 0x08 0x00
+    MEMCPY = 0x66      # copy N bytes from one memory address S to another address D e.g.: memcpy 0xDD 0xDD 0xSS 0xSS 0xNN 0xNN
     # arithmetic:
     INC = 0x80         # increment the specified register e.g.: inc ax
     INCF = 0x81        # increment a float in the specified register e.g.: incf ax

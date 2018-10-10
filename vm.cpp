@@ -1,8 +1,8 @@
 #include "vm.h"
 
 #define _NEXT_BYTE this->_program[++this->_registers[IP]]
-#define _NEXT_SHORT ((uint16_t) _NEXT_BYTE | ((uint16_t)_NEXT_BYTE << 8))
-#define _NEXT_INT ((uint32_t) _NEXT_BYTE | ((uint32_t)_NEXT_BYTE << 8) | ((uint32_t)_NEXT_BYTE << 16) | ((uint32_t)_NEXT_BYTE << 24))
+#define _NEXT_SHORT ((uint16_t)_NEXT_BYTE | ((uint16_t)_NEXT_BYTE << 8))
+#define _NEXT_INT ((uint32_t)_NEXT_BYTE | ((uint32_t)_NEXT_BYTE << 8) | ((uint32_t)_NEXT_BYTE << 16) | ((uint32_t)_NEXT_BYTE << 24))
 
 VM::VM(const uint8_t *program, const uint8_t *data, uint16_t dataSize, uint16_t freeBytes)
     : _program(program), _dataSize(dataSize + freeBytes)
@@ -72,7 +72,6 @@ void VM::_eval()
     {
         const uint8_t reg = _NEXT_BYTE;
         this->_registers[reg] = this->_stack[this->_registers[SP]--];
-        printf("popped %d\n", this->_registers[reg]);
         break;
     }
     case OP_POP2:
@@ -81,7 +80,6 @@ void VM::_eval()
         const uint8_t reg2 = _NEXT_BYTE;
         this->_registers[reg1] = this->_stack[this->_registers[SP]--];
         this->_registers[reg2] = this->_stack[this->_registers[SP]--];
-        printf("popped %d and %d\n", this->_registers[reg1], this->_registers[reg2]);
         break;
     }
     case OP_DUP:
@@ -120,20 +118,6 @@ void VM::_eval()
         const uint16_t addr = _NEXT_SHORT;
         const uint8_t reg = _NEXT_BYTE;
         this->_data[addr] = *(uint8_t *)&this->_registers[reg];
-        break;
-    }
-    case OP_CSTORS:
-    {
-        const uint16_t addr = _NEXT_SHORT;
-        strcpy((char *)&this->_data[addr], (char *)&this->_program[++this->_registers[IP]]);
-        this->_registers[IP] += strlen((char *)&this->_data[addr]);
-        break;
-    }
-    case OP_CSTORS_R:
-    {
-        const uint16_t addr = this->_registers[_NEXT_BYTE];
-        strcpy((char *)&this->_data[addr], (char *)&this->_program[++this->_registers[IP]]);
-        this->_registers[IP] += strlen((char *)&this->_data[addr]);
         break;
     }
     case OP_LOAD:
@@ -222,7 +206,7 @@ void VM::_eval()
     case OP_IMUL:
     {
         const uint8_t reg = _NEXT_BYTE;
-        *((int32_t*)&this->_registers[reg]) *= *((int32_t*)&this->_registers[_NEXT_BYTE]);
+        *((int32_t *)&this->_registers[reg]) *= *((int32_t *)&this->_registers[_NEXT_BYTE]);
         break;
     }
     case OP_FMUL:
@@ -240,7 +224,7 @@ void VM::_eval()
     case OP_IDIV:
     {
         const uint8_t reg = _NEXT_BYTE;
-        *((int32_t*)&this->_registers[reg]) /= *((int32_t*)&this->_registers[_NEXT_BYTE]);
+        *((int32_t *)&this->_registers[reg]) /= *((int32_t *)&this->_registers[_NEXT_BYTE]);
         break;
     }
     case OP_FDIV:
@@ -264,7 +248,7 @@ void VM::_eval()
     case OP_ISHR:
     {
         const uint8_t reg = _NEXT_BYTE;
-        *((int32_t*)&this->_registers[reg]) >>= this->_registers[_NEXT_BYTE];
+        *((int32_t *)&this->_registers[reg]) >>= this->_registers[_NEXT_BYTE];
         break;
     }
     case OP_MOD:
@@ -306,7 +290,7 @@ void VM::_eval()
     case OP_I2U:
     {
         const uint8_t reg = _NEXT_BYTE;
-        this->_registers[reg] = * ((int32_t *)&this->_registers[reg]);
+        this->_registers[reg] = *((int32_t *)&this->_registers[reg]);
         break;
     }
     case OP_I2F:
@@ -385,7 +369,7 @@ void VM::_eval()
         const uint8_t reg2 = _NEXT_BYTE;
         const uint16_t addr = _NEXT_SHORT;
 
-        if (*((int32_t*)&this->_registers[reg1]) > *((int32_t*)&this->_registers[reg2]))
+        if (*((int32_t *)&this->_registers[reg1]) > *((int32_t *)&this->_registers[reg2]))
             this->_registers[IP] = addr - 1;
         break;
     }
@@ -405,7 +389,7 @@ void VM::_eval()
         const uint8_t reg2 = _NEXT_BYTE;
         const uint16_t addr = _NEXT_SHORT;
 
-        if (*((int32_t*)&this->_registers[reg1]) >= *((int32_t*)&this->_registers[reg2]))
+        if (*((int32_t *)&this->_registers[reg1]) >= *((int32_t *)&this->_registers[reg2]))
             this->_registers[IP] = addr - 1;
         break;
     }
@@ -425,7 +409,7 @@ void VM::_eval()
         const uint8_t reg2 = _NEXT_BYTE;
         const uint16_t addr = _NEXT_SHORT;
 
-        if (*((int32_t*)&this->_registers[reg1]) < *((int32_t*)&this->_registers[reg2]))
+        if (*((int32_t *)&this->_registers[reg1]) < *((int32_t *)&this->_registers[reg2]))
             this->_registers[IP] = addr - 1;
         break;
     }
@@ -445,7 +429,7 @@ void VM::_eval()
         const uint8_t reg2 = _NEXT_BYTE;
         const uint16_t addr = _NEXT_SHORT;
 
-        if (*((int32_t*)&this->_registers[reg1]) <= *((int32_t*)&this->_registers[reg2]))
+        if (*((int32_t *)&this->_registers[reg1]) <= *((int32_t *)&this->_registers[reg2]))
             this->_registers[IP] = addr - 1;
         break;
     }
@@ -458,7 +442,7 @@ void VM::_eval()
     case OP_PRINTI:
     {
         const uint8_t reg = _NEXT_BYTE;
-        printf("%d", *((int32_t*)&this->_registers[reg]));
+        printf("%d", *((int32_t *)&this->_registers[reg]));
         break;
     }
     case OP_PRINTF:

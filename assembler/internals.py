@@ -1,5 +1,6 @@
 from data import REGISTERS, Opcodes, labels, label_instances
 
+
 def process_file(path):
     bytecode = bytearray()
     f = open(path, "r", encoding="utf-8")
@@ -11,16 +12,16 @@ def process_file(path):
         line_count += 1
         line = line.lstrip().rstrip()
 
-        if line.startswith(";") or len(line) == 0: # comment or empty
+        if line.startswith(";") or len(line) == 0:  # comment or empty
             pass
-        elif line.startswith(">"): # data
+        elif line.startswith(">"):  # data
             pass
-        elif line.startswith(".") and line.endswith(":") and len(line) > 2: # labels
+        elif line.startswith(".") and line.endswith(":") and len(line) > 2:  # labels
             label = line[1:-1]
             if label in labels:
                 raise ValueError("Label {} is already defined".format(label))
             labels[label] = len(bytecode)
-        else: # regular opcode
+        else:  # regular opcode
             process_instruction(bytecode, line)
 
         line = f.readline()
@@ -30,13 +31,16 @@ def process_file(path):
 
     return bytecode
 
+
 def print_bytecode(bytecode):
     print(", ".join("0x{:02X}".format(b) for b in bytecode))
+
 
 def write_bytecode(bytecode, path):
     f = open(path, "wb")
     f.write(bytecode)
     f.close()
+
 
 def str_to_int(s, bytecode, bytes_ahead=0):
     if len(s) == 3 and s.startswith("'") and s.endswith("'"):
@@ -48,23 +52,26 @@ def str_to_int(s, bytecode, bytes_ahead=0):
             label_instances[label].append(location)
         else:
             label_instances[label] = [location]
-        return 0 # to be replaced later
+        return 0  # to be replaced later
     elif s.startswith("0x"):
         return int(s, 16)
     else:
         return int(s, 10)
 
+
 def int_to_bytes(val, nbytes):
     if val < 0:
-        return val.to_bytes(nbytes, 'little', signed=True)
+        return val.to_bytes(nbytes, "little", signed=True)
     else:
-        return val.to_bytes(nbytes, 'little', signed=False)
+        return val.to_bytes(nbytes, "little", signed=False)
+
 
 def register_from_name(s):
     s = s.lower()
     if s not in REGISTERS:
         raise ValueError("Invalid register '{}'".format(s))
     return REGISTERS[s]
+
 
 def replace_label_instances(bytecode):
     for l, instances in label_instances.items():
@@ -74,66 +81,90 @@ def replace_label_instances(bytecode):
         label_val = int_to_bytes(labels[l], 2)
         for instance in instances:
             bytecode[instance] = label_val[0]
-            bytecode[instance+1] = label_val[1]
+            bytecode[instance + 1] = label_val[1]
+
 
 def singleop(bytecode, params, opcode):
     if params:
-        raise ValueError("Operation '{}' expects 0 arguments, got {}".format(opcode, len(params)))
+        raise ValueError(
+            "Operation '{}' expects 0 arguments, got {}".format(opcode, len(params))
+        )
     bytecode.append(opcode)
+
 
 def unop(bytecode, params, opcode):
     if len(params) != 1:
-        raise ValueError("Operation '{}' expects 1 argument, got {}".format(opcode, len(params)))
+        raise ValueError(
+            "Operation '{}' expects 1 argument, got {}".format(opcode, len(params))
+        )
     reg = register_from_name(params[0])
     bytecode.append(opcode)
     bytecode.append(reg)
 
+
 def unop_c(bytecode, params, opcode, nbytes):
     if len(params) != 1:
-        raise ValueError("Operation '{}' expects 1 argument, got {}".format(opcode, len(params)))
+        raise ValueError(
+            "Operation '{}' expects 1 argument, got {}".format(opcode, len(params))
+        )
     val = str_to_int(params[0], bytecode, 1)
     bytecode.append(opcode)
     bytecode.extend(int_to_bytes(val, nbytes))
 
+
 def binop(bytecode, params, opcode):
     if len(params) != 2:
-        raise ValueError("Operation '{}' expects 2 arguments, got {}".format(opcode, len(params)))
+        raise ValueError(
+            "Operation '{}' expects 2 arguments, got {}".format(opcode, len(params))
+        )
     reg1 = register_from_name(params[0])
     reg2 = register_from_name(params[1])
     bytecode.append(opcode)
     bytecode.append(reg1)
     bytecode.append(reg2)
 
+
 def binop_rc(bytecode, params, opcode, nbytes):
     if len(params) != 2:
-        raise ValueError("Operation '{}' expects 2 arguments, got {}".format(opcode, len(params)))
+        raise ValueError(
+            "Operation '{}' expects 2 arguments, got {}".format(opcode, len(params))
+        )
     reg = register_from_name(params[0])
     val = str_to_int(params[1], bytecode, 2)
     bytecode.append(opcode)
     bytecode.append(reg)
     bytecode.extend(int_to_bytes(val, nbytes))
 
+
 def binop_cr(bytecode, params, opcode, nbytes):
     if len(params) != 2:
-        raise ValueError("Operation '{}' expects 2 arguments, got {}".format(opcode, len(params)))
+        raise ValueError(
+            "Operation '{}' expects 2 arguments, got {}".format(opcode, len(params))
+        )
     val = str_to_int(params[0], bytecode, 1)
     reg = register_from_name(params[1])
     bytecode.append(opcode)
     bytecode.extend(int_to_bytes(val, nbytes))
     bytecode.append(reg)
 
+
 def binop_cc(bytecode, params, opcode, nbytes1, nbytes2):
     if len(params) != 2:
-        raise ValueError("Operation '{}' expects 2 arguments, got {}".format(opcode, len(params)))
+        raise ValueError(
+            "Operation '{}' expects 2 arguments, got {}".format(opcode, len(params))
+        )
     val1 = str_to_int(params[0], bytecode, 1)
     val2 = str_to_int(params[1], bytecode, 1 + nbytes1)
     bytecode.append(opcode)
     bytecode.extend(int_to_bytes(val1, nbytes1))
     bytecode.extend(int_to_bytes(val2, nbytes2))
 
+
 def ternop_ccc(bytecode, params, opcode, nbytes1, nbytes2, nbytes3):
     if len(params) != 3:
-        raise ValueError("Operation '{}' expects 3 arguments, got {}".format(opcode, len(params)))
+        raise ValueError(
+            "Operation '{}' expects 3 arguments, got {}".format(opcode, len(params))
+        )
     val1 = str_to_int(params[0], bytecode, 1)
     val2 = str_to_int(params[1], bytecode, 1 + nbytes1)
     val3 = str_to_int(params[2], bytecode, 1 + nbytes1 + nbytes2)
@@ -142,9 +173,12 @@ def ternop_ccc(bytecode, params, opcode, nbytes1, nbytes2, nbytes3):
     bytecode.extend(int_to_bytes(val2, nbytes2))
     bytecode.extend(int_to_bytes(val3, nbytes3))
 
+
 def ternop_rrc(bytecode, params, opcode, nbytes):
     if len(params) != 3:
-        raise ValueError("Operation '{}' expects 3 arguments, got {}".format(opcode, len(params)))
+        raise ValueError(
+            "Operation '{}' expects 3 arguments, got {}".format(opcode, len(params))
+        )
     reg1 = register_from_name(params[0])
     reg2 = register_from_name(params[1])
     val = str_to_int(params[2], bytecode, 3)
@@ -152,6 +186,7 @@ def ternop_rrc(bytecode, params, opcode, nbytes):
     bytecode.append(reg1)
     bytecode.append(reg2)
     bytecode.extend(int_to_bytes(val, nbytes))
+
 
 def process_instruction(bytecode, line):
     opcode, sep, params = line.partition(" ")
