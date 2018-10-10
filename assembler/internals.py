@@ -270,6 +270,8 @@ def process_instruction(bytecode, line):
         binop(bytecode, params, Opcodes.ISHR)
     elif opcode == "mod":
         binop(bytecode, params, Opcodes.MOD)
+    elif opcode == "imod":
+        binop(bytecode, params, Opcodes.IMOD)
     elif opcode == "and":
         binop(bytecode, params, Opcodes.AND)
     elif opcode == "or":

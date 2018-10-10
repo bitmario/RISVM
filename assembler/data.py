@@ -59,10 +59,11 @@ class Opcodes(IntEnum):
     SHR = 0x8F         # logical shift right, e.g.: shr ax, bx
     ISHR = 0x90        # arithmetic shift right (for signed values), e.g.: ishr ax, bx
     MOD = 0x91         # store division remainder in first reg e.g.: mod ax bx
-    AND = 0x92         # and two registers and store result in the first one e.g.: and ax bx
-    OR = 0x93          # or two registers and store result in the first one e.g.: or ax bx
-    XOR = 0x94         # xor two registers and store result in the first one e.g.: xor ax bx
-    NOT = 0x95         # not a register and store result e.g.: not ax
+    IMOD = 0x92        # store signed division remainder in first reg, e.g.: mod ax, bx 
+    AND = 0x93         # and two registers and store result in the first one e.g.: and ax bx
+    OR = 0x94          # or two registers and store result in the first one e.g.: or ax bx
+    XOR = 0x95         # xor two registers and store result in the first one e.g.: xor ax bx
+    NOT = 0x96         # not a register and store result e.g.: not ax
     # conversions:
     U2I = 0xA0        # convert an integer stored in a register to a float e.g.: i2f ax
     I2U = 0xA1        # convert a float stored in a register to an int e.g.: f2i ax

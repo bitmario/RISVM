@@ -52,6 +52,7 @@ enum Instructions
     OP_SHR,        // logical shift right, e.g.: shr ax, bx
     OP_ISHR,       // arithmetic shift right (for signed values), e.g.: ishr ax, bx
     OP_MOD,        // store division remainder in first reg, e.g.: mod ax, bx
+    OP_IMOD,       // store signed division remainder in first reg, e.g.: mod ax, bx 
     OP_AND,        // and two registers and store result in the first one, e.g.: and ax, bx
     OP_OR,         // or two registers and store result in the first one, e.g.: or ax, bx
     OP_XOR,        // xor two registers and store result in the first one, e.g.: xor ax, bx

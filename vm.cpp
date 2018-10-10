@@ -257,6 +257,12 @@ void VM::_eval()
         this->_registers[reg] %= this->_registers[_NEXT_BYTE];
         break;
     }
+    case OP_IMOD:
+    {
+        const uint8_t reg = _NEXT_BYTE;
+        *((int32_t *)&this->_registers[reg]) %= *((int32_t *)&this->_registers[_NEXT_BYTE]);
+        break;
+    }
     case OP_AND:
     {
         const uint8_t reg = _NEXT_BYTE;
