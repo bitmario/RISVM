@@ -180,6 +180,10 @@ def process_instruction(bytecode, line):
         binop(bytecode, params, Opcodes.POP2)
     elif opcode == "dup":
         singleop(bytecode, params, Opcodes.DUP)
+    elif opcode == "call":
+        unop_c(bytecode, params, Opcodes.CALL, 2)
+    elif opcode == "ret":
+        singleop(bytecode, params, Opcodes.RET)
     elif opcode == "stor":
         binop_cr(bytecode, params, Opcodes.STOR, 2)
     elif opcode == "storw":

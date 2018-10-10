@@ -22,6 +22,9 @@ enum Instructions
     OP_POP,         // pop the first element of the stack to a register, e.g.: pop ax
     OP_POP2,        // pop the two first elements of the stack to registers, e.g.: pop ax, bx
     OP_DUP,         // duplicate the last value in the stack, e.g.: dup
+    // functions
+    OP_CALL = 0x50, // set register RA to the next instruction and jump to subroutine, e.g.: call 0x10 0x00
+    OP_RET,         // return to the address of last callee (RA), e.g.: ret
     // memory:
     OP_STOR = 0x60, // copy a value from a register to a heap address, e.g.: stor 0x08 0x00, ax
     OP_STORW,       // copy a word value from a register to a heap address, e.g.: storw 0x08 0x00, ax
@@ -110,6 +113,7 @@ enum Registers
     IP,
     BP,
     SP,
+    RA,
     // count for our array
     REGISTERS_MAX
 };

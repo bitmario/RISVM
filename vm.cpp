@@ -90,6 +90,17 @@ void VM::_eval()
         this->_stack[this->_registers[SP]] = this->_stack[this->_registers[SP] - 1];
         break;
     }
+    case OP_CALL:
+    {
+        this->_registers[RA] = this->_registers[IP] + 3;
+        this->_registers[IP] = _NEXT_SHORT - 1;
+        break;
+    }
+    case OP_RET:
+    {
+        this->_registers[IP] = this->_registers[RA] - 1;
+        break;
+    }
     case OP_STOR:
     {
         const uint16_t addr = _NEXT_SHORT;

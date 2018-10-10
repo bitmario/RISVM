@@ -12,7 +12,8 @@ REGISTERS = {
     "fx": 5,
     "ip": 6,
     "bp": 7,
-    "sp": 8
+    "sp": 8,
+    "ra": 9
 }
 
 class Opcodes(IntEnum):
@@ -28,6 +29,9 @@ class Opcodes(IntEnum):
     POP = 0x41         # pop the first element of the stack to a register e.g.: pop ax
     POP2 = 0x42        # pop the two first elements of the stack to registers e.g.: pop ax bx
     DUP = 0x43         # duplicate the last value in the stack e.g.: dup
+    # functions
+    CALL = 0x50     # set register RA to the next instruction and jump to subroutine, e.g.: call 0x10 0x00
+    RET = 0x51      # return to the address of last callee (RA), e.g.: ret
     # memory:
     STOR = 0x60        # copy a value from a register to a heap address e.g.: stor 0x08 0x00 ax
     STORW = 0x61       # copy a word value from a register to a heap address e.g.: storw 0x08 0x00 ax
