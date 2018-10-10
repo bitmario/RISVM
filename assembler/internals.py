@@ -22,6 +22,7 @@ def process_file(path):
                 raise ValueError("Label {} is already defined".format(label))
             labels[label] = len(bytecode)
         else:  # regular opcode
+            line = line.partition(";")[0].rstrip() # ignore comments
             process_instruction(bytecode, line)
 
         line = f.readline()
