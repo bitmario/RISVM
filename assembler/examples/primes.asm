@@ -1,28 +1,28 @@
 ; calculate primes below 100000
 ; runtime: 11,835s
-    lconsb  ax, 1
-    lcons   bx, 100000
+    lconsb  r0, 1
+    lcons   r1, 100000
 
 .loop:
-    lconsb  cx, 2
+    lconsb  r2, 2
 
     .innerLoop:
-        jae     cx, ax, .isPrime
+        jae     r2, r0, .isPrime
 
-        mov     dx, ax
-        mod     dx, cx
-        jz      dx, .loopEnd
+        mov     r3, r0
+        mod     r3, r2
+        jz      r3, .loopEnd
 
-        inc     cx
+        inc     r2
         jmp     .innerLoop
 
 .isPrime:
-    printi  ax
+    printi  r0
     println
 
 .loopEnd:
-    inc     ax
-    jb      ax, bx, .loop
+    inc     r0
+    jb      r0, r1, .loop
 
 .end:
     halt

@@ -1,23 +1,23 @@
 ; counter
-    lconsb      ax, 0
+    lconsb      r0, 0
 ; loop end
-    lcons       bx, 2000000
+    lcons       r1, 2000000
 ; divider
-    lconsb      cx, 13
-    lconsb      ex, 0
+    lconsb      r2, 13
+    lconsb      r4, 0
 
 .loopStart:
-    mov         dx, ax
-    mod         dx, cx
+    mov         r3, r0
+    mod         r3, r2
 
-    jnz         dx, .loopEnd
+    jnz         r3, .loopEnd
     
-    printi      ax
+    printi      r0
     println
 
 .loopEnd:
-    inc         ax
-    jb          ax, bx, .loopStart
+    inc         r0
+    jb          r0, r1, .loopStart
 
     
     halt
