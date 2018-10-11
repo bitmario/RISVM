@@ -142,8 +142,6 @@ class VM
     uint32_t _registers[REGISTER_COUNT] = {0};
     uint16_t _dataSize = 0;
     bool _running = false;
-
-    void _eval();
 };
 
 #endif // __VM_H__
