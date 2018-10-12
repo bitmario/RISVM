@@ -35,13 +35,13 @@ enum Instructions
     OP_MEMCPY, // copy N bytes from one memory address S to another address D, e.g.: memcpy 0xDD 0xDD, 0xSS 0xSS, 0xNN 0xNN
     // arithmetic:
     OP_INC,  // increment the specified register, e.g.: inc r0
-    OP_INCF, // increment a float in the specified register, e.g.: incf r0
+    OP_FINC, // increment a float in the specified register, e.g.: incf r0
     OP_DEC,  // decrement the specified register, e.g.: dec r0
-    OP_DECF, // decrement a float in the specified register, e.g.: decf r0
+    OP_FDEC, // decrement a float in the specified register, e.g.: decf r0
     OP_ADD,  // sum and store in first reg, e.g.: add r0, r2
-    OP_ADDF, // sum two floats and store in first reg, e.g.: addf r0, r2
+    OP_FADD, // sum two floats and store in first reg, e.g.: addf r0, r2
     OP_SUB,  // subtract and store in first reg, e.g.: sub r0, r2
-    OP_SUBF, // subtract two floats and store in first reg, e.g.: subf r0, r2
+    OP_FSUB, // subtract two floats and store in first reg, e.g.: subf r0, r2
     OP_MUL,  // multiply and store in first reg, e.g.: mul r0, r2
     OP_IMUL, // signed multiply and store in first reg, e.g.: mul r0, r2
     OP_FMUL, // multiply two floats and store in first reg, e.g.: mulf r0, r2

@@ -250,20 +250,20 @@ def process_instruction(bytecode, line):
         ternop_ccc(bytecode, params, Opcodes.MEMCPY, 2, 2, 2)
     elif opcode == "inc":
         unop(bytecode, params, Opcodes.INC)
-    elif opcode == "incf":
-        unop(bytecode, params, Opcodes.INCF)
+    elif opcode == "finc":
+        unop(bytecode, params, Opcodes.FINC)
     elif opcode == "dec":
         unop(bytecode, params, Opcodes.DEC)
-    elif opcode == "decf":
-        unop(bytecode, params, Opcodes.DECF)
+    elif opcode == "fdec":
+        unop(bytecode, params, Opcodes.FDEC)
     elif opcode == "add":
         ternop(bytecode, params, Opcodes.ADD)
-    elif opcode == "addf":
-        ternop(bytecode, params, Opcodes.ADDF)
+    elif opcode == "fadd":
+        ternop(bytecode, params, Opcodes.FADD)
     elif opcode == "sub":
         ternop(bytecode, params, Opcodes.SUB)
-    elif opcode == "subf":
-        ternop(bytecode, params, Opcodes.SUBF)
+    elif opcode == "fsub":
+        ternop(bytecode, params, Opcodes.FSUB)
     elif opcode == "mul":
         ternop(bytecode, params, Opcodes.MUL)
     elif opcode == "imul":

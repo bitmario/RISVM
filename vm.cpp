@@ -146,7 +146,7 @@ void VM::run()
             this->_registers[reg]++;
             break;
         }
-        case OP_INCF:
+        case OP_FINC:
         {
             const uint8_t reg = _NEXT_BYTE;
             (*((float *)&this->_registers[reg]))++;
@@ -158,7 +158,7 @@ void VM::run()
             this->_registers[reg]--;
             break;
         }
-        case OP_DECF:
+        case OP_FDEC:
         {
             const uint8_t reg = _NEXT_BYTE;
             (*((float *)&this->_registers[reg]))--;
@@ -172,7 +172,7 @@ void VM::run()
             this->_registers[rreg] = this->_registers[reg1] + this->_registers[reg2];
             break;
         }
-        case OP_ADDF:
+        case OP_FADD:
         {
             const uint8_t rreg = _NEXT_BYTE;
             const uint8_t reg1 = _NEXT_BYTE;
@@ -188,7 +188,7 @@ void VM::run()
             this->_registers[rreg] = this->_registers[reg1] - this->_registers[reg2];
             break;
         }
-        case OP_SUBF:
+        case OP_FSUB:
         {
             const uint8_t rreg = _NEXT_BYTE;
             const uint8_t reg1 = _NEXT_BYTE;

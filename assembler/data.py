@@ -65,13 +65,13 @@ class Opcodes(AutoNumber):
     MEMCPY = () # copy N bytes from one memory address S to another address D = () e.g.: memcpy 0xDD 0xDD = () 0xSS 0xSS = () 0xNN 0xNN
     # arithmetic:
     INC = ()  # increment the specified register = () e.g.: inc r0
-    INCF = () # increment a float in the specified register = () e.g.: incf r0
+    FINC = () # increment a float in the specified register = () e.g.: incf r0
     DEC = ()  # decrement the specified register = () e.g.: dec r0
-    DECF = () # decrement a float in the specified register = () e.g.: decf r0
+    FDEC = () # decrement a float in the specified register = () e.g.: decf r0
     ADD = ()  # sum and store in first reg = () e.g.: add r0 = () r2
-    ADDF = () # sum two floats and store in first reg = () e.g.: addf r0 = () r2
+    FADD = () # sum two floats and store in first reg = () e.g.: addf r0 = () r2
     SUB = ()  # subtract and store in first reg = () e.g.: sub r0 = () r2
-    SUBF = () # subtract two floats and store in first reg = () e.g.: subf r0 = () r2
+    FSUB = () # subtract two floats and store in first reg = () e.g.: subf r0 = () r2
     MUL = ()  # multiply and store in first reg = () e.g.: mul r0 = () r2
     IMUL = () # signed multiply and store in first reg = () e.g.: mul r0 = () r2
     FMUL = () # multiply two floats and store in first reg = () e.g.: mulf r0 = () r2
