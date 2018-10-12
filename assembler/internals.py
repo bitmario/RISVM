@@ -161,6 +161,20 @@ def binop_cc(bytecode, params, opcode, nbytes1, nbytes2):
     bytecode.extend(int_to_bytes(val2, nbytes2))
 
 
+def ternop(bytecode, params, opcode):
+    if len(params) != 3:
+        raise ValueError(
+            "Operation '{}' expects 3 arguments, got {}".format(opcode, len(params))
+        )
+    reg1 = register_from_name(params[0])
+    reg2 = register_from_name(params[1])
+    reg3 = register_from_name(params[2])
+    bytecode.append(opcode)
+    bytecode.append(reg1)
+    bytecode.append(reg2)
+    bytecode.append(reg3)
+
+
 def ternop_ccc(bytecode, params, opcode, nbytes1, nbytes2, nbytes3):
     if len(params) != 3:
         raise ValueError(
@@ -243,43 +257,43 @@ def process_instruction(bytecode, line):
     elif opcode == "decf":
         unop(bytecode, params, Opcodes.DECF)
     elif opcode == "add":
-        binop(bytecode, params, Opcodes.ADD)
+        ternop(bytecode, params, Opcodes.ADD)
     elif opcode == "addf":
-        binop(bytecode, params, Opcodes.ADDF)
+        ternop(bytecode, params, Opcodes.ADDF)
     elif opcode == "sub":
-        binop(bytecode, params, Opcodes.SUB)
+        ternop(bytecode, params, Opcodes.SUB)
     elif opcode == "subf":
-        binop(bytecode, params, Opcodes.SUBF)
+        ternop(bytecode, params, Opcodes.SUBF)
     elif opcode == "mul":
-        binop(bytecode, params, Opcodes.MUL)
+        ternop(bytecode, params, Opcodes.MUL)
     elif opcode == "imul":
-        binop(bytecode, params, Opcodes.IMUL)
+        ternop(bytecode, params, Opcodes.IMUL)
     elif opcode == "fmul":
-        binop(bytecode, params, Opcodes.FMUL)
+        ternop(bytecode, params, Opcodes.FMUL)
     elif opcode == "div":
-        binop(bytecode, params, Opcodes.DIV)
+        ternop(bytecode, params, Opcodes.DIV)
     elif opcode == "idiv":
-        binop(bytecode, params, Opcodes.IDIV)
+        ternop(bytecode, params, Opcodes.IDIV)
     elif opcode == "fdiv":
-        binop(bytecode, params, Opcodes.FDIV)
+        ternop(bytecode, params, Opcodes.FDIV)
     elif opcode == "shl":
-        binop(bytecode, params, Opcodes.SHL)
+        ternop(bytecode, params, Opcodes.SHL)
     elif opcode == "shr":
-        binop(bytecode, params, Opcodes.SHR)
+        ternop(bytecode, params, Opcodes.SHR)
     elif opcode == "ishr":
-        binop(bytecode, params, Opcodes.ISHR)
+        ternop(bytecode, params, Opcodes.ISHR)
     elif opcode == "mod":
-        binop(bytecode, params, Opcodes.MOD)
+        ternop(bytecode, params, Opcodes.MOD)
     elif opcode == "imod":
-        binop(bytecode, params, Opcodes.IMOD)
+        ternop(bytecode, params, Opcodes.IMOD)
     elif opcode == "and":
-        binop(bytecode, params, Opcodes.AND)
+        ternop(bytecode, params, Opcodes.AND)
     elif opcode == "or":
-        binop(bytecode, params, Opcodes.OR)
+        ternop(bytecode, params, Opcodes.OR)
     elif opcode == "xor":
-        binop(bytecode, params, Opcodes.XOR)
+        ternop(bytecode, params, Opcodes.XOR)
     elif opcode == "not":
-        unop(bytecode, params, Opcodes.NOT)
+        binop(bytecode, params, Opcodes.NOT)
     elif opcode == "u2i":
         unop(bytecode, params, Opcodes.U2I)
     elif opcode == "i2u":

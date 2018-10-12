@@ -166,116 +166,153 @@ void VM::run()
         }
         case OP_ADD:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] += this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] + this->_registers[reg2];
             break;
         }
         case OP_ADDF:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            *((float *)&this->_registers[reg]) += *((float *)&this->_registers[_NEXT_BYTE]);
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            *((float *)&this->_registers[rreg]) = *((float *)&this->_registers[reg1]) + *((float *)&this->_registers[reg2]);
             break;
         }
         case OP_SUB:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] -= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] - this->_registers[reg2];
             break;
         }
         case OP_SUBF:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            *((float *)&this->_registers[reg]) -= *((float *)&this->_registers[_NEXT_BYTE]);
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            *((float *)&this->_registers[rreg]) = *((float *)&this->_registers[reg1]) - *((float *)&this->_registers[reg2]);
             break;
         }
         case OP_MUL:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] *= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] * this->_registers[reg2];
             break;
         }
         case OP_IMUL:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            *((int32_t *)&this->_registers[reg]) *= *((int32_t *)&this->_registers[_NEXT_BYTE]);
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            *((int32_t *)&this->_registers[rreg]) = *((int32_t *)&this->_registers[reg1]) * *((int32_t *)&this->_registers[reg2]);
             break;
         }
         case OP_FMUL:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            *((float *)&this->_registers[reg]) *= *((float *)&this->_registers[_NEXT_BYTE]);
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            *((float *)&this->_registers[rreg]) = *((float *)&this->_registers[reg1]) * *((float *)&this->_registers[reg2]);
             break;
         }
         case OP_DIV:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] /= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] / this->_registers[reg2];
             break;
         }
         case OP_IDIV:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            *((int32_t *)&this->_registers[reg]) /= *((int32_t *)&this->_registers[_NEXT_BYTE]);
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            *((int32_t *)&this->_registers[rreg]) = *((int32_t *)&this->_registers[reg1]) / *((int32_t *)&this->_registers[reg2]);
             break;
         }
         case OP_FDIV:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            *((float *)&this->_registers[reg]) /= *((float *)&this->_registers[_NEXT_BYTE]);
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            *((float *)&this->_registers[rreg]) = *((float *)&this->_registers[reg1]) / *((float *)&this->_registers[reg2]);
             break;
         }
         case OP_SHL:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] <<= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] << this->_registers[reg2];
             break;
         }
         case OP_SHR:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] >>= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] >> this->_registers[reg2];
             break;
         }
         case OP_ISHR:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            *((int32_t *)&this->_registers[reg]) >>= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            *((int32_t *)&this->_registers[rreg]) = *((int32_t *)&this->_registers[reg1]) >> *((int32_t *)&this->_registers[reg2]);
             break;
         }
         case OP_MOD:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] %= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] % this->_registers[reg2];
             break;
         }
         case OP_IMOD:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            *((int32_t *)&this->_registers[reg]) %= *((int32_t *)&this->_registers[_NEXT_BYTE]);
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            *((int32_t *)&this->_registers[rreg]) = *((int32_t *)&this->_registers[reg1]) % *((int32_t *)&this->_registers[reg2]);
             break;
         }
         case OP_AND:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] &= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] & this->_registers[reg2];
             break;
         }
         case OP_OR:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] |= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] | this->_registers[reg2];
             break;
         }
         case OP_XOR:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] ^= this->_registers[_NEXT_BYTE];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            this->_registers[rreg] = this->_registers[reg1] ^ this->_registers[reg2];
             break;
         }
         case OP_NOT:
         {
-            const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] = ~this->_registers[reg];
+            const uint8_t rreg = _NEXT_BYTE;
+            const uint8_t reg1 = _NEXT_BYTE;
+            this->_registers[rreg] = ~this->_registers[reg1];
             break;
         }
         case OP_U2I:

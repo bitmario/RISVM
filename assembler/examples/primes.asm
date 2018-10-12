@@ -1,5 +1,5 @@
 ; calculate primes below 100000
-; runtime: 6,207s
+; runtime: 5,575s
     lconsb  r0, 1
     lcons   r1, 100000
 
@@ -9,8 +9,7 @@
     .innerLoop:
         jae     r2, r0, .isPrime
 
-        mov     r3, r0
-        mod     r3, r2
+        mod     r3, r0, r2
         jz      r3, .loopEnd
 
         inc     r2

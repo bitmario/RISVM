@@ -1,7 +1,7 @@
 ; testing
     jmp     .entry
 .start:
-    mul     r2, r0
+    mul     r2, r2, r0
     printi  r2
     println
 
