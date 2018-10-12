@@ -1,8 +1,13 @@
 #include "vm.h"
 
 #define _NEXT_BYTE this->_program[++this->_registers[IP]]
-#define _NEXT_SHORT ((uint16_t)_NEXT_BYTE | ((uint16_t)_NEXT_BYTE << 8))
-#define _NEXT_INT ((uint32_t)_NEXT_BYTE | ((uint32_t)_NEXT_BYTE << 8) | ((uint32_t)_NEXT_BYTE << 16) | ((uint32_t)_NEXT_BYTE << 24))
+#define _NEXT_SHORT ({ this->_registers[IP] += 2; this->_program[this->_registers[IP]-1]\
+                     | this->_program[this->_registers[IP]] << 8; })
+#define _NEXT_INT ({                                                                                 \
+    this->_registers[IP] += 4;                                                                       \
+    this->_program[this->_registers[IP] - 3] | this->_program[this->_registers[IP] - 2] << 8 |       \
+        this->_program[this->_registers[IP] - 1] << 16 | this->_program[this->_registers[IP]] << 24; \
+})
 
 VM::VM(uint8_t *program)
     : _program(program)
@@ -339,7 +344,8 @@ void VM::run()
         }
         case OP_JR:
         {
-            this->_registers[IP] = this->_registers[_NEXT_BYTE] - 1;
+            const uint8_t reg = _NEXT_BYTE;
+            this->_registers[IP] = this->_registers[reg] - 1;
             break;
         }
         case OP_JZ:
@@ -525,7 +531,7 @@ void VM::run()
 #ifdef ARDUINO
             this->_registers[reg] = digitalRead(pin);
 #else
-            this->_registers[reg] = 1;
+            this->_registers[reg] = pin;
 #endif
 
             break;
@@ -538,7 +544,7 @@ void VM::run()
 #ifdef ARDUINO
             this->_registers[reg] = analogRead(pin);
 #else
-            this->_registers[reg] = 1024;
+            this->_registers[reg] = pin;
 #endif
 
             break;

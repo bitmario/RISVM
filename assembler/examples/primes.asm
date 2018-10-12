@@ -1,5 +1,5 @@
 ; calculate primes below 100000
-; runtime: 5,162
+; runtime: 5,225s
     lconsb  r0, 1
     lcons   r1, 100000
 
@@ -23,10 +23,10 @@
     jb      r0, r1, .loop
 
 .end:
-    printp      $hi
+;    printp      $doneStr
     halt
 
-$hi     byte[]      "done", '!', 0xA
+;$doneStr       byte[]      "done", '!', 0xA
 
 ; C++ equivalent
 ; runtime: 1,800s (G++ 7.3.0 -O3)
