@@ -1,11 +1,11 @@
 vm: main.o vm.o
-	g++ -O3 -g -o vm main.o vm.o
+	g++ -Wall -O3 -march=native -fno-strict-aliasing -g -o vm main.o vm.o
 
 main.o: main.cpp
-	g++ -O3 -g -o main.o -c main.cpp
+	g++ -Wall -O3 -march=native -fno-strict-aliasing -g -o main.o -c main.cpp
 
 vm.o: vm.cpp vm.h
-	g++ -O3 -g -o vm.o -c vm.cpp
+	g++ -Wall -O3 -march=native -fno-strict-aliasing -g -o vm.o -c vm.cpp
 
 clean:
 	rm -f *.o

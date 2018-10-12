@@ -1,5 +1,5 @@
 ; calculate primes below 100000
-; runtime: 6,477s
+; runtime: 6,207s
     lconsb  r0, 1
     lcons   r1, 100000
 
@@ -29,7 +29,7 @@
 
 
 ; C++ equivalent
-; runtime: 1,800s (G++ 7.3.0)
+; runtime: 1,800s (G++ 7.3.0 -O3)
 
 ; #include <stdio.h>
 ; #include <stdint.h>
@@ -46,6 +46,26 @@
 ;             printf("%d\n", num);
 ;     }
 ;     return 0;
+; }
+
+
+; JS (node v8.10.0)
+; 2,175s (wow)
+
+; for (num=1; num<100000; num++)
+; {
+;   isPrime = true;
+;   for (i=2; i<num; i++)
+;   {
+;     if (num % i == 0)
+;     {
+;       isPrime = false;
+;       break;
+;     }
+;   }
+
+;   if (isPrime)
+;     console.log(`${num}`);
 ; }
 
 
