@@ -331,11 +331,11 @@ def process_instruction(bytecode, line):
     elif opcode == "jle":
         ternop_rrc(bytecode, params, Opcodes.JLE, 2)
     elif opcode == "print":
-        unop(bytecode, params, Opcodes.PRINT)
+        binop_rc(bytecode, params, Opcodes.PRINT, 1)
     elif opcode == "printi":
-        unop(bytecode, params, Opcodes.PRINTI)
+        binop_rc(bytecode, params, Opcodes.PRINTI, 1)
     elif opcode == "printf":
-        unop(bytecode, params, Opcodes.PRINTF)
+        binop_rc(bytecode, params, Opcodes.PRINTF, 1)
     elif opcode == "printp":
         unop(bytecode, params, Opcodes.PRINTP)
     elif opcode == "println":

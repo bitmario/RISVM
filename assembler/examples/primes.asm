@@ -1,5 +1,5 @@
 ; calculate primes below 100000
-; runtime: 5,575s
+; runtime: 5,162
     lconsb  r0, 1
     lcons   r1, 100000
 
@@ -16,8 +16,7 @@
         jmp     .innerLoop
 
 .isPrime:
-    printi  r0
-    println
+    printi  r0, 1
 
 .loopEnd:
     inc     r0

@@ -470,19 +470,28 @@ void VM::run()
         case OP_PRINT:
         {
             const uint8_t reg = _NEXT_BYTE;
+            const uint8_t ln = _NEXT_BYTE;
             printf("%u", this->_registers[reg]);
+            if (ln == 1)
+                putchar('\n');
             break;
         }
         case OP_PRINTI:
         {
             const uint8_t reg = _NEXT_BYTE;
+            const uint8_t ln = _NEXT_BYTE;
             printf("%d", *((int32_t *)&this->_registers[reg]));
+            if (ln == 1)
+                putchar('\n');
             break;
         }
         case OP_PRINTF:
         {
             const uint8_t reg = _NEXT_BYTE;
+            const uint8_t ln = _NEXT_BYTE;
             printf("%f", *((float *)&this->_registers[reg]));
+            if (ln == 1)
+                putchar('\n');
             break;
         }
         case OP_PRINTP:
