@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     size_t s = fread(program, fileLen, 1, f);
     fclose(f);
 
-    VM vm(program, NULL, 0, 0);
+    VM vm(program);
     vm.run();
 
     return 0;

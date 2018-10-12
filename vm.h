@@ -131,16 +131,14 @@ enum Registers
 class VM
 {
   public:
-    VM(const uint8_t *program, const uint8_t *data, uint16_t dataSize, uint16_t zeroBytes = 0);
+    VM(uint8_t *program);
     ~VM();
     void run();
 
   protected:
-    const uint8_t *_program;
-    uint8_t *_data;
+    uint8_t *_program;
     uint32_t _stack[VM_STACK_SIZE] = {0};
     uint32_t _registers[REGISTER_COUNT] = {0};
-    uint16_t _dataSize = 0;
     bool _running = false;
 };
 

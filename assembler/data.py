@@ -1,8 +1,5 @@
 from enum import IntEnum
 
-labels = {}
-label_instances = {}
-
 REGISTERS = {
     "r0": 0,
     "r1": 1,

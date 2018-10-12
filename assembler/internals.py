@@ -1,7 +1,14 @@
-from data import REGISTERS, Opcodes, labels, label_instances
+import re
+from data import REGISTERS, Opcodes
 
+re_data = re.compile(r"^\$(?P<name>[\w]+)\s+(?P<type>byte|word|dword)(?P<arr>\[\d*\])?\s+(?P<val>.*)$")
+type_sizes = {"byte": 1, "word": 2, "dword": 4}
 
-def process_file(path):
+# includes actual labels AND data
+labels = {}
+label_instances = {}
+
+def process_file(path, align_data=4):
     bytecode = bytearray()
     f = open(path, "r", encoding="utf-8")
 
@@ -12,10 +19,10 @@ def process_file(path):
         line_count += 1
         line = line.lstrip().rstrip()
 
-        if line.startswith(";") or len(line) == 0:  # comment or empty
+        if len(line) == 0 or line.startswith(";"):  # comment or empty
             pass
-        elif line.startswith(">"):  # data
-            pass
+        elif line.startswith("$"):  # data
+            handle_data(bytecode, line, align_data)
         elif line.startswith(".") and line.endswith(":") and len(line) > 2:  # labels
             label = line[1:-1]
             if label in labels:
@@ -33,6 +40,50 @@ def process_file(path):
     return bytecode
 
 
+def handle_data(bytecode, line, align):
+    match = re_data.match(line)
+    if not match:
+        raise ValueError("Invalid data specification")
+
+    # first, align our bytecode
+    while len(bytecode) % align != 0:
+        bytecode.append(Opcodes.HALT)
+
+    name, dtype, array, val = match.groups()
+
+    if name in labels:
+        raise ValueError("{} is already defined as a label".format(name))
+    labels[name] = len(bytecode)
+
+    if not array or array == "[1]":
+        if val.startswith('"'):
+            val = ord(val[1])
+        else:
+            val = int(val)
+        
+        bytecode.extend(int_to_bytes(val, type_sizes[dtype]))
+    elif array == "[]":
+        is_str = False
+        for v in val.split(","):
+            v = v.lstrip().rstrip()
+
+            if dtype == "byte":
+                if len(v) == 3 and v.startswith('"') and v.endswith('"'):
+                    bytecode.append(ord(v[1]))
+                elif v.startswith('"') and v.endswith('"'):
+                    is_str = True
+                    for c in v[1:-1]:
+                        bytecode.append(ord(c))
+                else:
+                    bytecode.append(str_to_int(v, bytecode, accept_labels=False))
+            else:
+                v = str_to_int(v, bytecode, accept_labels=False)
+                bytecode.extend(int_to_bytes(v, type_sizes[dtype]))
+
+        if is_str:
+            bytecode.append(0)
+
+
 def print_bytecode(bytecode):
     print(", ".join("0x{:02X}".format(b) for b in bytecode))
 
@@ -43,10 +94,10 @@ def write_bytecode(bytecode, path):
     f.close()
 
 
-def str_to_int(s, bytecode, bytes_ahead=0):
+def str_to_int(s, bytecode, bytes_ahead=0, accept_labels=True):
     if len(s) == 3 and s.startswith("'") and s.endswith("'"):
         return ord(s[1])
-    elif s.startswith("."):
+    elif accept_labels and (s.startswith(".") or s.startswith("$")):
         label = s[1:]
         location = len(bytecode) + bytes_ahead
         if label in label_instances:
@@ -337,7 +388,7 @@ def process_instruction(bytecode, line):
     elif opcode == "printf":
         binop_rc(bytecode, params, Opcodes.PRINTF, 1)
     elif opcode == "printp":
-        unop(bytecode, params, Opcodes.PRINTP)
+        unop_c(bytecode, params, Opcodes.PRINTP, 2)
     elif opcode == "println":
         singleop(bytecode, params, Opcodes.PRINTLN)
     elif opcode == "i2s":

@@ -4,21 +4,13 @@
 #define _NEXT_SHORT ((uint16_t)_NEXT_BYTE | ((uint16_t)_NEXT_BYTE << 8))
 #define _NEXT_INT ((uint32_t)_NEXT_BYTE | ((uint32_t)_NEXT_BYTE << 8) | ((uint32_t)_NEXT_BYTE << 16) | ((uint32_t)_NEXT_BYTE << 24))
 
-VM::VM(const uint8_t *program, const uint8_t *data, uint16_t dataSize, uint16_t freeBytes)
-    : _program(program), _dataSize(dataSize + freeBytes)
+VM::VM(uint8_t *program)
+    : _program(program)
 {
-    if (this->_dataSize > 0)
-    {
-        this->_data = new uint8_t[this->_dataSize];
-        if (dataSize > 0)
-            memcpy((void *)this->_data, (void *)data, dataSize);
-    }
 }
 
 VM::~VM()
 {
-    if (this->_dataSize > 0)
-        delete[] this->_data;
 }
 
 void VM::run()
@@ -94,42 +86,43 @@ void VM::run()
         {
             const uint16_t addr = _NEXT_SHORT;
             const uint8_t reg = _NEXT_BYTE;
-            *(uint32_t *)&this->_data[addr] = this->_registers[reg];
+            memcpy(&this->_program[addr], &this->_registers[reg], sizeof(uint32_t));
             break;
         }
         case OP_STORW:
         {
             const uint16_t addr = _NEXT_SHORT;
             const uint8_t reg = _NEXT_BYTE;
-            *(uint16_t *)&this->_data[addr] = *(uint16_t *)&this->_registers[reg];
+            memcpy(&this->_program[addr], &this->_registers[reg], sizeof(uint16_t));
             break;
         }
         case OP_STORB:
         {
             const uint16_t addr = _NEXT_SHORT;
             const uint8_t reg = _NEXT_BYTE;
-            this->_data[addr] = *(uint8_t *)&this->_registers[reg];
+            memcpy(&this->_program[addr], &this->_registers[reg], sizeof(uint8_t));
             break;
         }
         case OP_LOAD:
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint16_t addr = _NEXT_SHORT;
-            this->_registers[reg] = *(uint32_t *)&this->_data[addr];
+            memcpy(&this->_registers[reg], &this->_program[addr], sizeof(uint32_t));
             break;
         }
         case OP_LOADW:
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint16_t addr = _NEXT_SHORT;
-            this->_registers[reg] = *(uint16_t *)&this->_data[addr];
+            this->_registers[reg] = 0;
+            memcpy(&this->_registers[reg], &this->_program[addr], sizeof(uint16_t));
             break;
         }
         case OP_LOADB:
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint16_t addr = _NEXT_SHORT;
-            this->_registers[reg] = *(uint8_t *)&this->_data[addr];
+            this->_registers[reg] = this->_program[addr];
             break;
         }
         case OP_MEMCPY:
@@ -137,7 +130,7 @@ void VM::run()
             const uint16_t bytes = _NEXT_SHORT;
             const uint16_t dest = _NEXT_SHORT;
             const uint16_t source = _NEXT_SHORT;
-            memcpy((void *)&this->_data[dest], (void *)&this->_data[source], bytes);
+            memcpy((void *)&this->_program[dest], (void *)&this->_program[source], bytes);
             break;
         }
         case OP_INC:
@@ -496,8 +489,8 @@ void VM::run()
         }
         case OP_PRINTP:
         {
-            const uint32_t addr = this->_registers[_NEXT_BYTE];
-            char *curChar = (char *)&this->_data[addr];
+            const uint16_t addr = _NEXT_SHORT;
+            char *curChar = (char *)&this->_program[addr];
             while (*curChar != '\0')
             {
                 putchar(*curChar);
@@ -514,14 +507,14 @@ void VM::run()
         {
             const uint16_t addr = _NEXT_SHORT;
             const uint8_t reg = _NEXT_BYTE;
-            sprintf((char *)&this->_data[addr], "%d", this->_registers[reg]);
+            sprintf((char *)&this->_program[addr], "%d", this->_registers[reg]);
             break;
         }
         case OP_S2I:
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint16_t addr = _NEXT_SHORT;
-            sscanf((char *)&this->_data[addr], "%d", &this->_registers[reg]);
+            sscanf((char *)&this->_program[addr], "%d", &this->_registers[reg]);
             break;
         }
         case OP_A_DR:

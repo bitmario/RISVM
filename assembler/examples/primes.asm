@@ -23,8 +23,10 @@
     jb      r0, r1, .loop
 
 .end:
+    printp      $hi
     halt
 
+$hi     byte[]      "done", '!', 0xA
 
 ; C++ equivalent
 ; runtime: 1,800s (G++ 7.3.0 -O3)
