@@ -18,14 +18,44 @@ VM::~VM()
 {
 }
 
-void VM::run()
+ExecResult VM::run(uint32_t maxInstr)
 {
-    this->_running = true;
+    uint32_t instrCount = 0;
+    uint8_t instr;
 
-    while (this->_running)
+    while (instrCount < maxInstr)
     {
-        switch (this->_program[this->_registers[IP]])
+        instr = this->_program[this->_registers[IP]];
+        if (instr >= INSTRUCTION_COUNT)
+            return ExecResult::VM_ERR_UNKNOWN_OPCODE;
+        
+        switch (instr)
         {
+        case OP_NOP:
+        {
+            break;
+        }
+        case OP_HALT:
+        {
+            return ExecResult::VM_FINISHED;
+            break;
+        }
+        case OP_SYSCALL:
+        {
+            const uint8_t num = _NEXT_BYTE;
+            printf("%u", num);
+            break;
+        }
+        case OP_INT:
+        {
+            if (this->_interruptCallback == nullptr)
+                return ExecResult::VM_ERR_UNHANDLED_INTERRUPT;
+
+            const uint8_t code = _NEXT_BYTE;
+            if (!this->_interruptCallback(code))
+                return ExecResult::VM_FINISHED;
+            break;
+        }
         case OP_MOV:
         {
             const uint8_t reg1 = _NEXT_BYTE;
@@ -560,6 +590,7 @@ void VM::run()
             const uint8_t reg = _NEXT_BYTE;
             const uint8_t pin = _NEXT_BYTE;
             this->_registers[reg] = digitalRead(pin);
+            break;
         }
         case OP_A_AR:
         {
@@ -604,16 +635,11 @@ void VM::run()
             break;
         }
 #endif
-        case OP_HALT:
-        {
-            this->_running = false;
-            break;
-        }
         }
 
         this->_registers[IP]++;
+        instrCount++;
     }
 
-    this->_registers[IP] = 0;
-    this->_registers[SP] = 0;
+    return ExecResult::VM_PAUSED;
 }

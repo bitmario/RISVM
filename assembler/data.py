@@ -41,6 +41,7 @@ class Opcodes(AutoNumber):
     NOP = () # do nothing
     HALT = () # halt execution
     SYSCALL = ()
+    INT = ()
     # constants:
     LCONS = ()  # store a value in a register = () e.g.: lcons r0 = () 0xA2 0x00 0x00 0x00
     LCONSW = () # store a word value in a register = () e.g.: lconsw r0 = () 0xA2 0x00

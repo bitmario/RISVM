@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <functional>
 
 #ifdef ARDUINO
 #include <Arduino.h>
@@ -12,12 +13,22 @@
 
 #define VM_STACK_SIZE 128
 
-enum Instructions
+enum ExecResult : uint8_t
+{
+    VM_FINISHED,                // execution completed (i.e. got halt instruction)
+    VM_PAUSED,                  // execution paused since we hit the maximum instructions
+    VM_ERR_UNKNOWN_OPCODE,      // unknown opcode
+    VM_ERR_UNHANDLED_INTERRUPT, // interrupt triggered without registered handler
+    VM_ERR_STACK_OVERFLOW,      // stack overflow
+};
+
+enum Instructions : uint8_t
 {
     // system:
-    OP_NOP,  // do nothing
-    OP_HALT, // halt execution
-    OP_SYSCALL,
+    OP_NOP,     // do nothing
+    OP_HALT,    // halt execution
+    OP_SYSCALL, // call system functions
+    OP_INT,     // interrupt which should be handled by user-registered function
     // constants:
     OP_LCONS,  // store a value in a register, e.g.: lcons r0, 0xA2 0x00 0x00 0x00
     OP_LCONSW, // store a word value in a register, e.g.: lconsw r0, 0xA2 0x00
@@ -102,9 +113,10 @@ enum Instructions
     OP_A_AWR, // analog write with a value from a register, e.g.: awr 0xA, r1
     OP_A_PM,  // set pin mode, e.g.: a_pm 0xA, 0x0
 #endif
+    INSTRUCTION_COUNT
 };
 
-enum Registers
+enum Registers : uint8_t
 {
     // preserved across a call
     R0,
@@ -138,13 +150,15 @@ class VM
   public:
     VM(uint8_t *program);
     ~VM();
-    void run();
+    ExecResult run(uint32_t maxInstr = UINT32_MAX);
+
+    void onInterrupt(std::function<bool(uint8_t)> callback) { this->_interruptCallback = callback; }
 
   protected:
     uint8_t *_program;
     uint32_t _stack[VM_STACK_SIZE] = {0};
     uint32_t _registers[REGISTER_COUNT] = {0};
-    bool _running = false;
+    std::function<bool(uint8_t)> _interruptCallback = nullptr;
 };
 
 #endif // __VM_H__
