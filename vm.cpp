@@ -554,97 +554,56 @@ void VM::run()
             sscanf((char *)&this->_program[addr], "%d", &this->_registers[reg]);
             break;
         }
+#ifdef ARDUINO
         case OP_A_DR:
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint8_t pin = _NEXT_BYTE;
-
-#ifdef ARDUINO
             this->_registers[reg] = digitalRead(pin);
-#else
-            this->_registers[reg] = pin;
-#endif
-
-            break;
         }
         case OP_A_AR:
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint8_t pin = _NEXT_BYTE;
-
-#ifdef ARDUINO
             this->_registers[reg] = analogRead(pin);
-#else
-            this->_registers[reg] = pin;
-#endif
-
             break;
         }
         case OP_A_DW:
         {
             const uint8_t pin = _NEXT_BYTE;
             const uint8_t state = _NEXT_BYTE;
-
-#ifdef ARDUINO
             digitalWrite(pin, state);
-#else
-            printf("set pin %d to D%d\n", pin, state);
-#endif
-
             break;
         }
         case OP_A_AW:
         {
             const uint8_t pin = _NEXT_BYTE;
             const uint16_t val = _NEXT_SHORT;
-
-#ifdef ARDUINO
             analogWrite(pin, val);
-#else
-            printf("set pin %d to A%d\n", pin, val);
-#endif
-
             break;
         }
         case OP_A_DWR:
         {
             const uint8_t pin = _NEXT_BYTE;
             const uint8_t reg = _NEXT_BYTE;
-
-#ifdef ARDUINO
             digitalWrite(pin, this->_registers[reg]);
-#else
-            printf("set pin %d to D%d\n", pin, this->_registers[reg]);
-#endif
-
             break;
         }
         case OP_A_AWR:
         {
             const uint8_t pin = _NEXT_BYTE;
             const uint8_t reg = _NEXT_BYTE;
-
-#ifdef ARDUINO
             analogWrite(pin, this->_registers[reg]);
-#else
-            printf("set pin %d to A%d\n", pin, this->_registers[reg]);
-#endif
-
             break;
         }
         case OP_A_PM:
         {
             const uint8_t pin = _NEXT_BYTE;
             const uint8_t mode = _NEXT_BYTE;
-
-#ifdef ARDUINO
             pinMode(pin, mode);
-#else
-            printf("set pin %d to mode %d\n", pin, mode);
-#endif
-
             break;
         }
+#endif
         case OP_HALT:
         {
             this->_running = false;

@@ -37,7 +37,10 @@ class AutoNumber(IntEnum):
         return obj
 
 class Opcodes(AutoNumber):
+    # system:  
     NOP = () # do nothing
+    HALT = () # halt execution
+    SYSCALL = ()
     # constants:
     LCONS = ()  # store a value in a register = () e.g.: lcons r0 = () 0xA2 0x00 0x00 0x00
     LCONSW = () # store a word value in a register = () e.g.: lconsw r0 = () 0xA2 0x00
@@ -121,6 +124,3 @@ class Opcodes(AutoNumber):
     A_DWR = () # digital write with a value from a register = () e.g.: dwr 0xA = () r1
     A_AWR = () # analog write with a value from a register = () e.g.: awr 0xA = () r1
     A_PM = ()  # set pin mode = () e.g.: a_pm 0xA = () 0x0
-    # system:
-    SYSCALL = ()
-    HALT = () # halt execution

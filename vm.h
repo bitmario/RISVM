@@ -14,7 +14,10 @@
 
 enum Instructions
 {
-    OP_NOP, // do nothing
+    // system:
+    OP_NOP,  // do nothing
+    OP_HALT, // halt execution
+    OP_SYSCALL,
     // constants:
     OP_LCONS,  // store a value in a register, e.g.: lcons r0, 0xA2 0x00 0x00 0x00
     OP_LCONSW, // store a word value in a register, e.g.: lconsw r0, 0xA2 0x00
@@ -89,8 +92,8 @@ enum Instructions
     OP_PRINTLN, // print a newline, e.g.: println
     OP_I2S,     // convert an int stored in a register to a string in a specific address, e.g.: i2s 0x20 0x00, r0
     OP_S2I,     // convert a string at the specified address to an int in a register, e.g.: s2i r0, 0x20 0x00
+#ifdef ARDUINO
     // Arduino:
-    // TODO: pinMode()
     OP_A_DR,  // digital read from a pin to a register, e.g.: dr r0, 0x0A
     OP_A_AR,  // analog read from a pin to a register, e.g.: ar r0, 0x0A
     OP_A_DW,  // digital write to a pin (on/off), e.g.: dw 0xA, 0x1
@@ -98,9 +101,7 @@ enum Instructions
     OP_A_DWR, // digital write with a value from a register, e.g.: dwr 0xA, r1
     OP_A_AWR, // analog write with a value from a register, e.g.: awr 0xA, r1
     OP_A_PM,  // set pin mode, e.g.: a_pm 0xA, 0x0
-    // system:
-    OP_SYSCALL,
-    OP_HALT // halt execution
+#endif
 };
 
 enum Registers
