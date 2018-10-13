@@ -470,43 +470,74 @@ void VM::run()
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint8_t ln = _NEXT_BYTE;
+#ifdef ARDUINO
+            if (ln == 1)
+                Serial.printf("%u\n", this->_registers[reg]);
+            else
+                Serial.printf("%u", this->_registers[reg]);
+#else
             printf("%u", this->_registers[reg]);
             if (ln == 1)
                 putchar('\n');
+#endif
             break;
         }
         case OP_PRINTI:
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint8_t ln = _NEXT_BYTE;
+
+#ifdef ARDUINO
+            if (ln == 1)
+                Serial.printf("%d\n", *((int32_t *)&this->_registers[reg]));
+            else
+                Serial.printf("%d", *((int32_t *)&this->_registers[reg]));
+#else
             printf("%d", *((int32_t *)&this->_registers[reg]));
             if (ln == 1)
                 putchar('\n');
+#endif
             break;
         }
         case OP_PRINTF:
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint8_t ln = _NEXT_BYTE;
+
+#ifdef ARDUINO
+            if (ln == 1)
+                Serial.printf("%f\n", *((float *)&this->_registers[reg]));
+            else
+                Serial.printf("%f", *((float *)&this->_registers[reg]));
+#else
             printf("%f", *((float *)&this->_registers[reg]));
             if (ln == 1)
                 putchar('\n');
+#endif
             break;
         }
         case OP_PRINTP:
         {
             const uint16_t addr = _NEXT_SHORT;
             char *curChar = (char *)&this->_program[addr];
+#ifdef ARDUINO
+            Serial.print(curChar);
+#else
             while (*curChar != '\0')
             {
                 putchar(*curChar);
                 curChar++;
             }
+#endif
             break;
         }
         case OP_PRINTLN:
         {
+#ifdef ARDUINO
+            Serial.println();
+#else
             putchar('\n');
+#endif
             break;
         }
         case OP_I2S:

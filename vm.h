@@ -6,6 +6,10 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifdef ARDUINO
+#include <Arduino.h>
+#endif
+
 #define VM_STACK_SIZE 128
 
 enum Instructions
