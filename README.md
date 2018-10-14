@@ -50,8 +50,8 @@ int 0xFF              ; trigger interrupt 0xFF
 
 ```assembly
 lcons r0, 0xFFFFFFFF  ; load 32-bit constant
-lconsw r0, 0xFFFFF    ; load 16-bit (word) constant
-lconsb r0, 0xFFF      ; load 8-bit (byte) constant
+lconsw r0, 0xFFFF     ; load 16-bit (word) constant
+lconsb r0, 0xFF       ; load 8-bit (byte) constant
 mov r0, r1            ; copy the contents of register r1 to r0
 ```
 
