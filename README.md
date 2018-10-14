@@ -37,8 +37,6 @@ $doneStr         byte[]      "done", '!', 0xA
 
 Instructions codes are always one-byte long, optionally followed by bytes representing operands. Destinations (if any) are always the first operand.
 
-Listing below (incomplete).
-
 #### System
 
 ```assembly
@@ -111,6 +109,42 @@ and r0, r1, r2        ; store reult of r1 AND r2 in r0
 or r0, r1, r2         ; store reult of r1 OR r2 in r0
 xor r0, r1, r2        ; store reult of r1 XOR r2 in r0
 not r0, r1            ; store reult of NOT r1 in r0
+```
+
+#### Conversions
+
+```assembly
+f2i r0, r1            ; convert float r1 to signed int and store in r0
+i2f r0, r1            ; convert signed int r1 to float and store in r0
+```
+
+#### Branching
+
+```assembly
+jmp .labelName         ; unconditional jump to address
+jr r0                  ; unconditional jump to address in register
+jz r0, .jmpDest        ; jump if r0 is zero
+jnz r0, .jmpDest       ; jump if r0 is not zero
+je r0, r1, .jmpDest    ; jump if r0 and r1 are equal
+jne r0, r1, .jmpDest   ; jump if r0 and r1 are not equal
+ja r0, r1, .jmpDest    ; jump if r0 is greater than r1
+jg r0, r1, .jmpDest    ; (signed) jump if r0 is greater than r1
+jae r0, r1, .jmpDest   ; jump if r0 is greater or equal to r1
+jge r0, r1, .jmpDest   ; (signed) jump if r0 is greater or equal to r1
+jb r0, r1, .jmpDest    ; jump if r0 is less than r1
+jl r0, r1, .jmpDest    ; (signed) jump if r0 is less than r1
+jbe r0, r1, .jmpDest   ; jump if r0 is less or equal to r1
+jle r0, r1, .jmpDest   ; (signed) jump if r0 is less or equal to r1
+```
+
+#### I/O
+
+```assembly
+print r0, 0x1          ; print register, with or without newline (0/1)
+printi r0, 0x1         ; (signed) print register, with or without newline (0/1)
+printf r0, 0x1         ; (float) print register, with or without newline (0/1)
+printp $myStr          ; (char array) print string at address
+println                ; print a newline
 ```
 
 ## License

@@ -28,7 +28,7 @@ ExecResult VM::run(uint32_t maxInstr)
         instr = this->_program[this->_registers[IP]];
         if (instr >= INSTRUCTION_COUNT)
             return ExecResult::VM_ERR_UNKNOWN_OPCODE;
-        
+
         switch (instr)
         {
         case OP_NOP:
@@ -358,13 +358,15 @@ ExecResult VM::run(uint32_t maxInstr)
         case OP_I2F:
         {
             const uint8_t reg = _NEXT_BYTE;
-            *((float *)&this->_registers[reg]) = (float)this->_registers[reg];
+            const uint8_t reg1 = _NEXT_BYTE;
+            *((float *)&this->_registers[reg]) = (float)*((int32_t *)&this->_registers[reg1]);
             break;
         }
         case OP_F2I:
         {
             const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] = (uint32_t) * ((float *)&this->_registers[reg]);
+            const uint8_t reg1 = _NEXT_BYTE;
+            *((int32_t *)&this->_registers[reg]) = (int32_t) * ((float *)&this->_registers[reg1]);
             break;
         }
         case OP_JMP:
