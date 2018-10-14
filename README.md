@@ -21,7 +21,7 @@ Run it!
 ./vm assembler/examples/helloworld.bin
 ```
 
-## Embedding
+### Embedding
 
 Include `vm.h` in your project and do something like this:
 
@@ -56,7 +56,8 @@ A stack is also available, currently hardcoded to 128 `uint32` values.
 
 Instruction codes are always one-byte long and, depending on type, may be followed by one or more bytes a representing operands. Instructions are also not aligned, in order to save space.
 
-In RISC spirit, there are only 70 instructions, most of which are quite simple and operate only on registers (except load/store instructions and string operations).
+In RISC spirit, there are only 70 [instructions](#instruction-reference), most of which are quite simple and operate only on registers (except load/store instructions and string operations).
+
 ## Assembly
 
 Instruction names are inspired on x86 which makes them sound familiar and allows us to leverage standard assembly highlighting in editors.
