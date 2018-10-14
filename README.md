@@ -2,7 +2,7 @@
 
 RISVM is a RISC-like bytecode virtual machine written in C++.
 
-It includes a simple Python 3 [assembler](assembler/) assembler and related [examples](assembler/examples) examples.
+It includes a simple Python 3 [assembler](assembler/) and related [examples](assembler/examples).
 
 This project is built as a learning experience and aims for simplicity over optimization. It won't be the fastest VM, but it should run well on any little-endian platform.
 
@@ -17,9 +17,9 @@ There are 16 general-purpose and 4 special registers, all of which are stored as
 | r0-r5 | 0-5    | general-purpose                  | Y         |
 | t0-t9 | 6-15   | general-purpose (temporary/args) | N         |
 | ip    | 16     | instruction pointer              | Y         |
-| bp    | 16     | base pointer                     | Y         |
-| sp    | 16     | stack pointer                    | Y         |
-| ra    | 16     | return address                   | N         |
+| bp    | 17     | base pointer                     | Y         |
+| sp    | 18     | stack pointer                    | Y         |
+| ra    | 19     | return address                   | N         |
 
 ### Memory
 
@@ -30,7 +30,7 @@ Examples:
 ```assembly
 $val32           dword       1234567
 $val16           word        1234
-$doneStr       byte[]      "done", '!', 0xA
+$doneStr         byte[]      "done", '!', 0xA
 ```
 
 ### Instructions
@@ -86,7 +86,7 @@ pop r0                ; pop a value from the stack into a register
 ```
 
 ```assembly
-pop2 r0               ; pop two values from the stack into two registers
+pop2 r0, r1           ; pop two values from the stack into two registers
 ```
 
 ```assembly
