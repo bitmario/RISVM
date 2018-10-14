@@ -43,17 +43,8 @@ Listing below (incomplete).
 
 ```assembly
 nop                   ; do nothing
-```
-
-```assembly
 halt                  ; terminate execution
-```
-
-```assembly
 syscall 0xFF          ; run syscall 0xFF
-```
-
-```assembly
 int 0xFF              ; trigger interrupt 0xFF
 ```
 
@@ -61,17 +52,8 @@ int 0xFF              ; trigger interrupt 0xFF
 
 ```assembly
 lcons r0, 0xFFFFFFFF  ; load 32-bit constant
-```
-
-```assembly
 lconsw r0, 0xFFFFF    ; load 16-bit (word) constant
-```
-
-```assembly
 lconsb r0, 0xFFF      ; load 8-bit (byte) constant
-```
-
-```assembly
 mov r0, r1            ; copy the contents of register r1 to r0
 ```
 
@@ -79,17 +61,8 @@ mov r0, r1            ; copy the contents of register r1 to r0
 
 ```assembly
 push r0               ; push a register onto the stack
-```
-
-```assembly
 pop r0                ; pop a value from the stack into a register
-```
-
-```assembly
 pop2 r0, r1           ; pop two values from the stack into two registers
-```
-
-```assembly
 dop                   ; duplicate the last value in the stack
 ```
 
@@ -97,9 +70,6 @@ dop                   ; duplicate the last value in the stack
 
 ```assembly
 call .mySub           ; set the return address register and jump to label
-```
-
-```assembly
 ret                   ; return to the address of last caller
 ```
 
@@ -107,29 +77,11 @@ ret                   ; return to the address of last caller
 
 ```assembly
 stor $var1, r0        ; store the 32-bit value of r0 in memory location var1
-```
-
-```assembly
 storw $var1, r0       ; store the 16-bit value of r0 in memory location var1
-```
-
-```assembly
 storb $var1, r0       ; store the 8-bit value of r0 in memory location var1
-```
-
-```assembly
 load r0, $var1        ; load the 32-bit value of memory location var1 into r0
-```
-
-```assembly
 loadw r0, $var1       ; load the 16-bit value of memory location var1 into r0
-```
-
-```assembly
 loadb r0, $var1       ; load the 8-bit value of memory location var1 into r0
-```
-
-```assembly
 memcpy $dest, $src, 0xFFFF  ; copy the specified number of bytes from source to dest
 ```
 
@@ -137,93 +89,27 @@ memcpy $dest, $src, 0xFFFF  ; copy the specified number of bytes from source to 
 
 ```assembly
 inc r0                ; increment the value of register
-```
-
-```assembly
 finc r0               ; (float) increment the value of register
-```
-
-```assembly
 dec r0                ; decrement the value of register
-```
-
-```assembly
 fdec r0               ; (float) decrement the value of register
-```
-
-```assembly
 add r0, r1, r2        ; add r1 and r2 and store result in r0
-```
-
-```assembly
 fadd r0, r1, r2       ; (float) add r1 and r2 and store result in r0
-```
-
-```assembly
 sub r0, r1, r2        ; subtract r2 from r1 and store result in r0
-```
-
-```assembly
 fsub r0, r1, r2       ; (float) subtract r2 from r1 and store result in r0
-```
-
-```assembly
 mul r0, r1, r2        ; multiply r1 by r2 and store result in r0
-```
-
-```assembly
 imul r0, r1, r2       ; (signed) multiply r1 by r2 and store result in r0
-```
-
-```assembly
 fmul r0, r1, r2       ; (float) multiply r1 by r2 and store result in r0
-```
-
-```assembly
 div r0, r1, r2        ; divide r1 by r2 and store result in r0
-```
-
-```assembly
 idiv r0, r1, r2       ; (signed) divide r1 by r2 and store result in r0
-```
-
-```assembly
 fdiv r0, r1, r2       ; (float) divide r1 by r2 and store result in r0
-```
-
-```assembly
 shl r0, r1, r2        ; shift r1 left by r2 and store result in r0
-```
-
-```assembly
 shr r0, r1, r2        ; shift r1 right by r2 and store result in r0
-```
-
-```assembly
 ishr r0, r1, r2       ; (signed) shift r1 right by r2 and store result in r0
-```
-
-```assembly
 mod r0, r1, r2        ; store remainder of r1 divided by r2 in r0
-```
-
-```assembly
 imod r0, r1, r2       ; (signed) store remainder of r1 divided by r2 in r0
-```
-
-```assembly
 and r0, r1, r2        ; store reult of r1 AND r2 in r0
-```
-
-```assembly
 or r0, r1, r2         ; store reult of r1 OR r2 in r0
-```
-
-```assembly
 xor r0, r1, r2        ; store reult of r1 XOR r2 in r0
-```
-
-```assembly
 not r0, r1            ; store reult of NOT r1 in r0
 ```
 
