@@ -350,9 +350,9 @@ def process_instruction(bytecode, line):
     elif opcode == "i2u":
         unop(bytecode, params, Opcodes.I2U)
     elif opcode == "i2f":
-        unop(bytecode, params, Opcodes.I2F)
+        binop(bytecode, params, Opcodes.I2F)
     elif opcode == "f2i":
-        unop(bytecode, params, Opcodes.F2I)
+        binop(bytecode, params, Opcodes.F2I)
     elif opcode == "jmp":
         unop_c(bytecode, params, Opcodes.JMP, 2)
     elif opcode == "jr":
