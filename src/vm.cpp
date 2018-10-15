@@ -21,11 +21,10 @@ VM::~VM()
 ExecResult VM::run(uint32_t maxInstr)
 {
     uint32_t instrCount = 0;
-    uint8_t instr;
 
     while (instrCount < maxInstr)
     {
-        instr = this->_program[this->_registers[IP]];
+        const uint8_t instr = this->_program[this->_registers[IP]];
         if (instr >= INSTRUCTION_COUNT)
             return ExecResult::VM_ERR_UNKNOWN_OPCODE;
 
@@ -38,7 +37,6 @@ ExecResult VM::run(uint32_t maxInstr)
         case OP_HALT:
         {
             return ExecResult::VM_FINISHED;
-            break;
         }
         case OP_SYSCALL:
         {
