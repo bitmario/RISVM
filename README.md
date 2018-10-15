@@ -2,7 +2,7 @@
 
 RISVM is a RISC-like bytecode virtual machine written in C++.
 
-It includes a simple Python 3 [assembler](assembler/) and related [examples](assembler/examples).
+It includes a simple Python 3 [assembler](assembler/) with [documentation](#Assembly) and related [examples](examples/asm).
 
 This project is built as a learning experience and aims for simplicity over optimization. It won't be the fastest VM, but it should run well on any little-endian platform.
 
@@ -12,13 +12,13 @@ Build the standard VM interpreter and assemble an example:
 
 ```bash
 make
-python3 assembler/assembler.py assembler/examples/helloworld.asm
+python3 assembler/assembler.py examples/asm/helloworld.asm
 ```
 
 Run it!
 
 ```
-./vm assembler/examples/helloworld.bin
+./vm examples/asm/helloworld.bin
 ```
 
 ### Embedding

@@ -1,5 +1,5 @@
 ; calculate primes below 100000
-; runtime: 5,291s
+; runtime: 4,966s
     lconsb  r0, 1
     lcons   r1, 100000
 

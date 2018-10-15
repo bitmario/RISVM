@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-#include <functional>
 
 #ifdef ARDUINO
 #include <Arduino.h>
@@ -152,13 +151,13 @@ class VM
     ~VM();
     ExecResult run(uint32_t maxInstr = UINT32_MAX);
 
-    void onInterrupt(std::function<bool(uint8_t)> callback) { this->_interruptCallback = callback; }
+    void onInterrupt(bool (*callback)(uint8_t)) { this->_interruptCallback = callback; }
 
   protected:
     uint8_t *_program;
     uint32_t _stack[VM_STACK_SIZE] = {0};
     uint32_t _registers[REGISTER_COUNT] = {0};
-    std::function<bool(uint8_t)> _interruptCallback = nullptr;
+    bool (*_interruptCallback)(uint8_t) = nullptr;
 };
 
 #endif // __VM_H__

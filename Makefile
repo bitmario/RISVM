@@ -1,12 +1,17 @@
+CXX := g++
+CXXFLAGS := -Wall -O3 -fno-strict-aliasing -g
+
+all: vm
+
 vm: main.o vm.o
-	g++ -Wall -O3 -march=native -fno-strict-aliasing -g -o vm main.o vm.o
+	$(CXX) $(CXXFLAGS) -o vm src/main.o src/vm.o
 
-main.o: main.cpp
-	g++ -Wall -O3 -march=native -fno-strict-aliasing -g -o main.o -c main.cpp
+main.o: src/main.cpp
+	$(CXX) $(CXXFLAGS) -o src/main.o -c src/main.cpp
 
-vm.o: vm.cpp vm.h
-	g++ -Wall -O3 -march=native -fno-strict-aliasing -g -o vm.o -c vm.cpp
+vm.o: src/vm.cpp src/vm.h
+	$(CXX) $(CXXFLAGS) -o src/vm.o -c src/vm.cpp
 
 clean:
-	rm -f *.o
+	rm -f src/*.o
 	rm -f vm
