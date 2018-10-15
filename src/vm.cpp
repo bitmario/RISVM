@@ -81,27 +81,27 @@ ExecResult VM::run(uint32_t maxInstr)
         }
         case OP_PUSH:
         {
-            this->_stack[++this->_registers[SP]] = this->_registers[_NEXT_BYTE];
+            this->_stack[this->_registers[SP]++] = this->_registers[_NEXT_BYTE];
             break;
         }
         case OP_POP:
         {
             const uint8_t reg = _NEXT_BYTE;
-            this->_registers[reg] = this->_stack[this->_registers[SP]--];
+            this->_registers[reg] = this->_stack[--this->_registers[SP]];
             break;
         }
         case OP_POP2:
         {
             const uint8_t reg1 = _NEXT_BYTE;
             const uint8_t reg2 = _NEXT_BYTE;
-            this->_registers[reg1] = this->_stack[this->_registers[SP]--];
-            this->_registers[reg2] = this->_stack[this->_registers[SP]--];
+            this->_registers[reg1] = this->_stack[--this->_registers[SP]];
+            this->_registers[reg2] = this->_stack[--this->_registers[SP]];
             break;
         }
         case OP_DUP:
         {
-            this->_registers[SP]++;
             this->_stack[this->_registers[SP]] = this->_stack[this->_registers[SP] - 1];
+            this->_registers[SP]++;
             break;
         }
         case OP_CALL:

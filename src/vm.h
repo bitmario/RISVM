@@ -21,7 +21,7 @@ enum ExecResult : uint8_t
     VM_ERR_STACK_OVERFLOW,      // stack overflow
 };
 
-enum Instructions : uint8_t
+enum Instruction : uint8_t
 {
     // system:
     OP_NOP,     // do nothing
@@ -115,7 +115,7 @@ enum Instructions : uint8_t
     INSTRUCTION_COUNT
 };
 
-enum Registers : uint8_t
+enum Register : uint8_t
 {
     // preserved across a call
     R0,
@@ -152,6 +152,13 @@ class VM
     ExecResult run(uint32_t maxInstr = UINT32_MAX);
 
     void onInterrupt(bool (*callback)(uint8_t)) { this->_interruptCallback = callback; }
+
+    uint32_t stackCount() { return this->_registers[SP]; }
+    void stackPush(uint32_t value) { this->_stack[this->_registers[SP]++] = value; }
+    uint32_t stackPop() { return this->_stack[--this->_registers[SP]]; }
+
+    uint32_t getRegister(Register reg) { return this->_registers[reg]; }
+    void setRegister(Register reg, uint32_t val) { this->_registers[reg] = val; }
 
   protected:
     uint8_t *_program;
