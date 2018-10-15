@@ -69,6 +69,23 @@
 ; }
 
 
+; Lua 5.3
+; runtime: 7,234s
+
+; for num=1,99999 do
+;   isPrime = true
+;   for i=2,num-1 do
+;     if num % i == 0 then
+;       isPrime = false
+;       break
+;     end
+;   end
+;   if isPrime then
+;     print(num)
+;   end
+; end
+
+
 ; Python 3.6.6
 ; runtime: 35,952s
 

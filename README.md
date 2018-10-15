@@ -2,7 +2,7 @@
 
 RISVM is a RISC-like bytecode virtual machine written in C++.
 
-It includes a simple Python 3 [assembler](assembler/) with [documentation](#Assembly) and related [examples](examples/asm).
+It includes a simple Python 3 [assembler](assembler/) with [documentation](#assembly) and related [examples](examples/asm).
 
 This project is built as a learning experience and aims for simplicity over optimization. It won't be the fastest VM, but it should run well on any little-endian platform.
 
@@ -215,6 +215,22 @@ printf r0, 0x1         ; (float) print register, with or without newline (1/0)
 printp $myStr          ; (char array) print string at address
 println                ; print a newline
 ```
+
+## Performance
+
+While performance is not the main focus, we aim to make the VM as efficient as possible without compromising simplicity.
+
+The [primes.asm](examples/asm/primes.asm) example was used as a benchmark on x86-64 system. Here are the results vs. comparable implementations in some popular languages:
+
+| implementation    | runtime   | performance hit |
+|-------------------|-----------|-----------------|
+| C++ (G++ 7.3 -O3) | 1.80s     | 0% (baseline)   |
+| JS (node 8.10)    | 2.18s     | 21%             |
+| **RISVM**         | **4.97s** | 176%            |
+| Lua 5.3           | 7.23s     | 305%            |
+| Python 3.6.6      | 35.95s    | 1897%           |
+
+It seems like RISVM is about 3x slower than native code, but still beats most scripting languages. However, on less powerful architectures like Xtensa and AVR the VM can be up to 10 times slower than native code.
 
 ## License
 
