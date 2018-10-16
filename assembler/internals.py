@@ -387,10 +387,22 @@ def process_instruction(bytecode, line):
         binop_rc(bytecode, params, Opcodes.PRINTI, 1)
     elif opcode == "printf":
         binop_rc(bytecode, params, Opcodes.PRINTF, 1)
-    elif opcode == "printp":
-        unop_c(bytecode, params, Opcodes.PRINTP, 2)
+    elif opcode == "printc":
+        unop(bytecode, params, Opcodes.PRINTC)
+    elif opcode == "prints":
+        unop_c(bytecode, params, Opcodes.PRINTS, 2)
     elif opcode == "println":
         singleop(bytecode, params, Opcodes.PRINTLN)
+    elif opcode == "read":
+        unop(bytecode, params, Opcodes.READ)
+    elif opcode == "readi":
+        unop(bytecode, params, Opcodes.READI)
+    elif opcode == "readf":
+        unop(bytecode, params, Opcodes.READF)
+    elif opcode == "readc":
+        unop(bytecode, params, Opcodes.READC)
+    elif opcode == "reads":
+        binop_cc(bytecode, params, Opcodes.READS, 2, 2)
     elif opcode == "i2s":
         binop_cr(bytecode, params, Opcodes.I2S, 2)
     elif opcode == "s2i":

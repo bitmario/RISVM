@@ -5,5 +5,5 @@ $hello          byte[]  "Hello world!", 0x0A
 
 ; label definition
 .entry: 
-    printp      $hello
+    prints      $hello
     halt

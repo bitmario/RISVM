@@ -16,14 +16,14 @@
         jmp     .innerLoop
 
 .isPrime:
-    printi  r0, 1
+    print   r0, 1
 
 .loopEnd:
     inc     r0
     jb      r0, r1, .loop
 
 .end:
-;    printp      $doneStr
+;    prints      $doneStr
     halt
 
 ;$doneStr       byte[]      "done", '!', 0xA

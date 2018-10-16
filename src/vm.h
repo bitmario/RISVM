@@ -98,8 +98,14 @@ enum Instruction : uint8_t
     OP_PRINT,   // print an integer stored in a register, e.g.: print r0
     OP_PRINTI,  // print a signed integer stored in a register, e.g.: printi r0
     OP_PRINTF,  // print a float stored in a register, e.g.: printf r0
-    OP_PRINTP,  // print a string stored in the memory address pointed by a register, e.g.: printp r0
+    OP_PRINTC,  // print a single char stored in a register
+    OP_PRINTS,  // print a string stored in a memory address
     OP_PRINTLN, // print a newline, e.g.: println
+    OP_READ,    // read an integer from stdin
+    OP_READI,   // read a signed integer from stdin to the specified register
+    OP_READF,   // read a float from stdin to the specified register
+    OP_READC,   // read a single character's code from stdin to the specified register
+    OP_READS,   // read a line to the specified memory address, to a maximum length
     OP_I2S,     // convert an int stored in a register to a string in a specific address, e.g.: i2s 0x20 0x00, r0
     OP_S2I,     // convert a string at the specified address to an int in a register, e.g.: s2i r0, 0x20 0x00
 #ifdef ARDUINO
@@ -150,7 +156,12 @@ class VM
     VM(uint8_t *program);
     ~VM();
     ExecResult run(uint32_t maxInstr = UINT32_MAX);
-    void reset() { this->_registers[IP] = 0; this->_registers[SP] = 0; this->_registers[BP] = 0;}
+    void reset()
+    {
+        this->_registers[IP] = 0;
+        this->_registers[SP] = 0;
+        this->_registers[BP] = 0;
+    }
 
     void onInterrupt(bool (*callback)(uint8_t)) { this->_interruptCallback = callback; }
 

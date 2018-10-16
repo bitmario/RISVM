@@ -500,14 +500,15 @@ ExecResult VM::run(uint32_t maxInstr)
         {
             const uint8_t reg = _NEXT_BYTE;
             const uint8_t ln = _NEXT_BYTE;
+
 #ifdef ARDUINO
-            if (ln == 1)
-                Serial.printf("%u\n", this->_registers[reg]);
-            else
+            if (ln == 0)
                 Serial.printf("%u", this->_registers[reg]);
+            else
+                Serial.printf("%u\n", this->_registers[reg]);
 #else
             printf("%u", this->_registers[reg]);
-            if (ln == 1)
+            if (ln != 0)
                 putchar('\n');
 #endif
             break;
@@ -518,13 +519,13 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t ln = _NEXT_BYTE;
 
 #ifdef ARDUINO
-            if (ln == 1)
-                Serial.printf("%d\n", *((int32_t *)&this->_registers[reg]));
-            else
+            if (ln == 0)
                 Serial.printf("%d", *((int32_t *)&this->_registers[reg]));
+            else
+                Serial.printf("%d\n", *((int32_t *)&this->_registers[reg]));
 #else
             printf("%d", *((int32_t *)&this->_registers[reg]));
-            if (ln == 1)
+            if (ln != 0)
                 putchar('\n');
 #endif
             break;
@@ -535,18 +536,28 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t ln = _NEXT_BYTE;
 
 #ifdef ARDUINO
-            if (ln == 1)
-                Serial.printf("%f\n", *((float *)&this->_registers[reg]));
-            else
+            if (ln == 0)
                 Serial.printf("%f", *((float *)&this->_registers[reg]));
+            else
+                Serial.printf("%f\n", *((float *)&this->_registers[reg]));
 #else
             printf("%f", *((float *)&this->_registers[reg]));
-            if (ln == 1)
+            if (ln != 0)
                 putchar('\n');
 #endif
             break;
         }
-        case OP_PRINTP:
+        case OP_PRINTC:
+        {
+            char* c = (char*)&this->_registers[_NEXT_BYTE];
+#ifdef ARDUINO
+            Serial.print(*c);
+#else
+            putchar(*c);
+#endif
+            break;
+        }
+        case OP_PRINTS:
         {
             const uint16_t addr = _NEXT_SHORT;
             char *curChar = (char *)&this->_program[addr];
@@ -567,6 +578,57 @@ ExecResult VM::run(uint32_t maxInstr)
             Serial.println();
 #else
             putchar('\n');
+#endif
+            break;
+        }
+        case OP_READ:
+        {
+            const uint8_t reg = _NEXT_BYTE;
+#ifdef ARDUINO
+
+#else
+            scanf("%u", &this->_registers[reg]);
+#endif
+            break;
+        }
+        case OP_READI:
+        {
+            const uint8_t reg = _NEXT_BYTE;
+#ifdef ARDUINO
+
+#else
+            scanf("%d", (int32_t *)&this->_registers[reg]);
+#endif
+            break;
+        }
+        case OP_READF:
+        {
+            const uint8_t reg = _NEXT_BYTE;
+#ifdef ARDUINO
+
+#else
+            scanf("%f", (float *)&this->_registers[reg]);
+#endif
+            break;
+        }
+        case OP_READC:
+        {
+            const uint8_t reg = _NEXT_BYTE;
+#ifdef ARDUINO
+
+#else
+            this->_registers[reg] = getchar();
+#endif
+            break;
+        }
+        case OP_READS:
+        {
+            char *dest = (char *)&this->_program[_NEXT_SHORT];
+            size_t maxLen = _NEXT_SHORT;
+#ifdef ARDUINO
+
+#else
+            getline(&dest, &maxLen, stdin);
 #endif
             break;
         }

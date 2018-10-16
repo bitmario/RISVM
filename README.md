@@ -100,7 +100,7 @@ $hello          byte[]  "Hello world!", 0x0A
 
 ; label definition
 .entry: 
-    printp      $hello
+    prints      $hello
     halt
 ```
 
@@ -209,11 +209,17 @@ jle r0, r1, .jmpDest   ; (signed) jump if r0 is less or equal to r1
 #### I/O
 
 ```assembly
-print r0, 0x1          ; print register, with or without newline (0/1)
-printi r0, 0x1         ; (signed) print register, with or without newline (1/0)
-printf r0, 0x1         ; (float) print register, with or without newline (1/0)
-printp $myStr          ; (char array) print string at address
+print r0, 0x1          ; print register r0, with or without newline (0/1)
+printi r0, 0x1         ; (signed) print register r0, with or without newline (1/0)
+printf r0, 0x1         ; (float) print register r0, with or without newline (1/0)
+printc r0              ; (char) print single character from a code in r0
+prints $myStr          ; (char array) print string at address
 println                ; print a newline
+read r0                ; read an integer from stdin to r0
+readi r0               ; (signed) read a signed integer from stdin to r0
+readf r0               ; (float) read a float from stdin to r0
+readc r0               ; (char) read a char from stdin to r0
+reads $strBuf, 10      ; (char array) read a max of 10 chars from stdin into $strBuf
 ```
 
 ## Performance
@@ -226,7 +232,7 @@ The [primes.asm](examples/asm/primes.asm) example was used as a benchmark on x86
 |-------------------|-----------|-----------------|
 | C++ (G++ 7.3 -O3) | 1.80s     | 0% (baseline)   |
 | JS (node 8.10)    | 2.18s     | 21%             |
-| **RISVM**         | **4.97s** | 176%            |
+| **RISVM**         | **4.97s** | **176%**        |
 | Lua 5.3           | 7.23s     | 305%            |
 | Python 3.6.6      | 35.95s    | 1897%           |
 

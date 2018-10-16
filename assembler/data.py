@@ -112,8 +112,14 @@ class Opcodes(AutoNumber):
     PRINT = ()   # print an integer stored in a register = () e.g.: print r0
     PRINTI = ()  # print a signed integer stored in a register = () e.g.: printi r0
     PRINTF = ()  # print a float stored in a register = () e.g.: printf r0
-    PRINTP = ()  # print a string stored in the memory address pointed by a register = () e.g.: printp r0
+    PRINTC = ()  # print a single character from a register
+    PRINTS = ()  # print a string stored in a memory address
     PRINTLN = () # print a newline = () e.g.: println
+    READ = ()    # read an integer from stdin
+    READI = ()   # read a signed integer from stdin to the specified register
+    READF = ()   # read a float from stdin to the specified register
+    READC = ()   # read a single character's code from stdin to the specified register
+    READS = ()   # read a line to the specified memory address, to a maximum length
     I2S = ()     # convert an int stored in a register to a string in a specific address = () e.g.: i2s 0x20 0x00 = () r0
     S2I = ()     # convert a string at the specified address to an int in a register = () e.g.: s2i r0 = () 0x20 0x00
     # Arduino:
