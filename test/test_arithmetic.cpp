@@ -516,3 +516,323 @@ TEST_CASE("OP_FDIV")
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
 }
+
+TEST_CASE("OP_SHL")
+{
+    uint8_t program[] = {
+        OP_SHL, R0, R1, R2,
+        OP_HALT};
+    VM vm(program);
+
+    SECTION("1 << 0")
+    {
+        vm.setRegister(R1, 1);
+        vm.setRegister(R2, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 1);
+    }
+
+    SECTION("0xFF00 << 1")
+    {
+        vm.reset();
+        vm.setRegister(R1, 0xFF00);
+        vm.setRegister(R2, 1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0x1FE00);
+    }
+
+    SECTION("0xA310 << 16")
+    {
+        vm.reset();
+        vm.setRegister(R1, 0xA310);
+        vm.setRegister(R2, 16);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0xA3100000);
+    }
+}
+
+TEST_CASE("OP_SHR")
+{
+    uint8_t program[] = {
+        OP_SHR, R0, R1, R2,
+        OP_HALT};
+    VM vm(program);
+
+    SECTION("1 >> 0")
+    {
+        vm.setRegister(R1, 1);
+        vm.setRegister(R2, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 1);
+    }
+
+    SECTION("0xFF00 >> 1")
+    {
+        vm.reset();
+        vm.setRegister(R1, 0xFF00);
+        vm.setRegister(R2, 1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0x7F80);
+    }
+
+    SECTION("0xA3100000 >> 16")
+    {
+        vm.reset();
+        vm.setRegister(R1, 0xA3100000);
+        vm.setRegister(R2, 16);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0xA310);
+    }
+}
+
+TEST_CASE("OP_ISHR")
+{
+    uint8_t program[] = {
+        OP_ISHR, R0, R1, R2,
+        OP_HALT};
+    VM vm(program);
+
+    SECTION("1 >> 0")
+    {
+        vm.setRegister(R1, 1);
+        vm.setRegister(R2, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 1);
+    }
+
+    SECTION("-100 >> 1")
+    {
+        int32_t val1 = -100;
+        int32_t expected = -50;
+        vm.reset();
+        vm.setRegister(R1, *((uint32_t *)&val1));
+        vm.setRegister(R2, 1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == *((uint32_t *)&expected));
+    }
+
+    SECTION("0xA3100000 >> 16")
+    {
+        int32_t val1 = 100;
+        int32_t expected = 50;
+        vm.reset();
+        vm.setRegister(R1, *((uint32_t *)&val1));
+        vm.setRegister(R2, 1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == *((uint32_t *)&expected));
+    }
+}
+
+TEST_CASE("OP_MOD")
+{
+    uint8_t program[] = {
+        OP_MOD, R0, R1, R2,
+        OP_HALT};
+    VM vm(program);
+
+    // SECTION("1 % 0")
+    // {
+    // TODO: add code to test handling of division by zero
+    // }
+
+    SECTION("2 mod 2")
+    {
+        vm.reset();
+        vm.setRegister(R1, 2);
+        vm.setRegister(R2, 2);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0);
+    }
+
+    SECTION("987513 mod 347")
+    {
+        vm.reset();
+        vm.setRegister(R1, 987513);
+        vm.setRegister(R2, 347);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 298);
+    }
+}
+
+TEST_CASE("OP_IMOD")
+{
+    uint8_t program[] = {
+        OP_IMOD, R0, R1, R2,
+        OP_HALT};
+    VM vm(program);
+
+    // SECTION("1 / 0")
+    // {
+    // TODO: add code to test handling of division by zero
+    // }
+
+    SECTION("2 mod 2")
+    {
+        vm.reset();
+        vm.setRegister(R1, 2);
+        vm.setRegister(R2, 2);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0);
+    }
+
+    SECTION("-50 mod -3")
+    {
+        int32_t val1 = -50;
+        int32_t val2 = -3;
+        int32_t expected = -2;
+        vm.reset();
+        vm.setRegister(R1, *((uint32_t *)&val1));
+        vm.setRegister(R2, *((uint32_t *)&val2));
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == *((uint32_t *)&expected));
+    }
+}
+
+TEST_CASE("OP_AND")
+{
+    uint8_t program[] = {
+        OP_AND, R0, R1, R2,
+        OP_HALT};
+    VM vm(program);
+
+    SECTION("0 & 0")
+    {
+        vm.setRegister(R1, 0);
+        vm.setRegister(R2, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0);
+    }
+
+    SECTION("1 & 0")
+    {
+        vm.setRegister(R1, 1);
+        vm.setRegister(R2, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0);
+    }
+
+    SECTION("1 & 1")
+    {
+        vm.setRegister(R1, 1);
+        vm.setRegister(R2, 1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 1);
+    }
+
+    SECTION("0xF1F1F1F1 & 0xEAD1")
+    {
+        vm.setRegister(R1, 0xF1F1F1F1);
+        vm.setRegister(R2, 0xEAD1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0xE0D1);
+    }
+}
+
+TEST_CASE("OP_OR")
+{
+    uint8_t program[] = {
+        OP_OR, R0, R1, R2,
+        OP_HALT};
+    VM vm(program);
+
+    SECTION("0 | 0")
+    {
+        vm.setRegister(R1, 0);
+        vm.setRegister(R2, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0);
+    }
+
+    SECTION("1 | 0")
+    {
+        vm.setRegister(R1, 1);
+        vm.setRegister(R2, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 1);
+    }
+
+    SECTION("1 | 1")
+    {
+        vm.setRegister(R1, 1);
+        vm.setRegister(R2, 1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 1);
+    }
+
+    SECTION("0xF1F1F1F1 | 0xEAD1")
+    {
+        vm.setRegister(R1, 0xF1F1F1F1);
+        vm.setRegister(R2, 0xEAD1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0xF1F1FBF1);
+    }
+}
+
+TEST_CASE("OP_XOR")
+{
+    uint8_t program[] = {
+        OP_XOR, R0, R1, R2,
+        OP_HALT};
+    VM vm(program);
+
+    SECTION("0 ^ 0")
+    {
+        vm.setRegister(R1, 0);
+        vm.setRegister(R2, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0);
+    }
+
+    SECTION("1 ^ 0")
+    {
+        vm.setRegister(R1, 1);
+        vm.setRegister(R2, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 1);
+    }
+
+    SECTION("1 ^ 1")
+    {
+        vm.setRegister(R1, 1);
+        vm.setRegister(R2, 1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0);
+    }
+
+    SECTION("0xF1F1F1F1 ^ 0xEAD1")
+    {
+        vm.setRegister(R1, 0xF1F1F1F1);
+        vm.setRegister(R2, 0xEAD1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0xF1F11B20);
+    }
+}
+
+TEST_CASE("OP_NOT")
+{
+    uint8_t program[] = {
+        OP_NOT, R0, R1,
+        OP_HALT};
+    VM vm(program);
+
+    SECTION("!0")
+    {
+        vm.setRegister(R1, 0);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0xFFFFFFFF);
+    }
+
+    SECTION("!1")
+    {
+        vm.setRegister(R1, 1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0xFFFFFFFE);
+    }
+
+    SECTION("!0xF1F1F1F1")
+    {
+        vm.setRegister(R1, 0xF1F1F1F1);
+        vm.run();
+        REQUIRE(vm.getRegister(R0) == 0xE0E0E0E);
+    }
+}
