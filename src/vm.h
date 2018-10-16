@@ -150,6 +150,7 @@ class VM
     VM(uint8_t *program);
     ~VM();
     ExecResult run(uint32_t maxInstr = UINT32_MAX);
+    void reset() { this->_registers[IP] = 0; this->_registers[SP] = 0; this->_registers[BP] = 0;}
 
     void onInterrupt(bool (*callback)(uint8_t)) { this->_interruptCallback = callback; }
 
