@@ -158,9 +158,8 @@ class VM
     ExecResult run(uint32_t maxInstr = UINT32_MAX);
     void reset()
     {
-        this->_registers[IP] = 0;
-        this->_registers[SP] = 0;
-        this->_registers[BP] = 0;
+        for (int i = 0; i < REGISTER_COUNT; i++)
+            this->_registers[i] = 0;
     }
 
     void onInterrupt(bool (*callback)(uint8_t)) { this->_interruptCallback = callback; }
