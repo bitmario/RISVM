@@ -1,10 +1,12 @@
 # RISVM - Reduced Instruction Set VM
 
-RISVM is a RISC-like bytecode virtual machine written in C++.
+[![Build Status](https://travis-ci.com/bitmario/RISVM.svg?branch=master)](https://travis-ci.com/bitmario/RISVM) [![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 
-It includes a simple Python 3 [assembler](assembler/) with [documentation](#assembly) and related [examples](examples/asm).
+RISVM is a low-overhead, embeddable RISC-like bytecode virtual machine written in simple C++ and designed to work on any little-endian platform.
 
-This project is built as a learning experience and aims for simplicity over optimization. It won't be the fastest VM, but it should run well on any little-endian platform.
+It includes [tests](test/) and a simple Python 3 [assembler](assembler/) with [documentation](#assembly) and [examples](examples/asm).
+
+This project is still a work in progress, so be aware that backwards compatibility may be broken at any time.
 
 ## Getting started
 
@@ -241,3 +243,5 @@ It seems like RISVM is about 3x slower than native code, but still beats most sc
 ## License
 
 Licnesed under the MIT License, see the [LICENSE](LICENSE) file for details.
+
+Includes the [Catch2](https://github.com/catchorg/Catch2) testing library which is licensed under the Boost Software License, read the full license [here](test/lib/catch2_LICENSE).

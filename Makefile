@@ -1,5 +1,6 @@
 CXX ?= g++
-CXXFLAGS := -Wall -O3 -fno-strict-aliasing -g
+CXXFLAGS := -std=c++11 -Wall -O3 -fno-strict-aliasing -g
+CXXFLAGS_TEST = -std=c++11 -fno-strict-aliasing 
 
 all: vm tests
 	$(info Done! Quick commands:)
@@ -17,22 +18,22 @@ vm.o: src/vm.cpp src/vm.h
 	$(CXX) $(CXXFLAGS) -o src/vm.o -c src/vm.cpp
 
 tests: vm.o test.o test_registers.o test_stack.o test_arithmetic.o test_branching.o
-	$(CXX) -o tests src/vm.o test/test.o test/test_registers.o test/test_stack.o test/test_arithmetic.o test/test_branching.o
+	$(CXX) $(CXXFLAGS_TEST) -o tests src/vm.o test/test.o test/test_registers.o test/test_stack.o test/test_arithmetic.o test/test_branching.o
 
 test.o: test/test.cpp
-	$(CXX) -o test/test.o -c test/test.cpp
+	$(CXX) $(CXXFLAGS_TEST) -o test/test.o -c test/test.cpp
 
 test_registers.o: test/test_registers.cpp
-	$(CXX) -o test/test_registers.o -c test/test_registers.cpp
+	$(CXX) $(CXXFLAGS_TEST) -o test/test_registers.o -c test/test_registers.cpp
 
 test_stack.o: test/test_stack.cpp
-	$(CXX) -o test/test_stack.o -c test/test_stack.cpp
+	$(CXX) $(CXXFLAGS_TEST) -o test/test_stack.o -c test/test_stack.cpp
 
 test_arithmetic.o: test/test_arithmetic.cpp
-	$(CXX) -o test/test_arithmetic.o -c test/test_arithmetic.cpp
+	$(CXX) $(CXXFLAGS_TEST) -o test/test_arithmetic.o -c test/test_arithmetic.cpp
 
 test_branching.o: test/test_branching.cpp
-	$(CXX) -o test/test_branching.o -c test/test_branching.cpp
+	$(CXX) $(CXXFLAGS_TEST) -o test/test_branching.o -c test/test_branching.cpp
 
 clean:
 	rm -f src/*.o

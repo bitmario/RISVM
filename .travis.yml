@@ -3,8 +3,8 @@ sudo: false
 
 matrix:
   include:
-    # works on Precise and Trusty
     - os: linux
+      compiler: gcc
       addons:
         apt:
           sources:
@@ -14,8 +14,8 @@ matrix:
       env:
          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
-    # works on Precise and Trusty
     - os: linux
+      compiler: gcc
       addons:
         apt:
           sources:
@@ -25,8 +25,8 @@ matrix:
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
-    # works on Precise and Trusty
     - os: linux
+      compiler: gcc
       addons:
         apt:
           sources:
@@ -36,8 +36,8 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
 
-    # works on Precise and Trusty
     - os: linux
+      compiler: gcc
       addons:
         apt:
           sources:
@@ -46,8 +46,20 @@ matrix:
             - g++-7
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-    # works on Precise and Trusty
+
     - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+
+    - os: linux
+      compiler: clang
       addons:
         apt:
           sources:
@@ -58,8 +70,8 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
 
-    # works on Precise and Trusty
     - os: linux
+      compiler: clang
       addons:
         apt:
           sources:
@@ -70,8 +82,8 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.7 && CXX=clang++-3.7"
 
-    # works on Precise and Trusty
     - os: linux
+      compiler: clang
       addons:
         apt:
           sources:
@@ -82,8 +94,8 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
 
-    # works on Trusty
     - os: linux
+      compiler: clang
       addons:
         apt:
           sources:
@@ -93,8 +105,8 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
 
-    # works on Trusty
     - os: linux
+      compiler: clang
       addons:
         apt:
           sources:
@@ -104,8 +116,8 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
 
-    # works on Trusty
     - os: linux
+      compiler: clang
       addons:
         apt:
           sources:
@@ -115,9 +127,32 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
+    - os: osx
+      osx_image: xcode7.3
+      compiler: clang
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+
+    - os: osx
+      osx_image: xcode9
+      compiler: clang
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+
+    - os: osx
+      osx_image: xcode9.1
+      compiler: clang
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+
 before_install:
     - eval "${MATRIX_EVAL}"
 
 script:
-    - make
-    - ./tests
+    - make && ./tests
