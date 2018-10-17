@@ -16,8 +16,8 @@ main.o: src/main.cpp
 vm.o: src/vm.cpp src/vm.h
 	$(CXX) $(CXXFLAGS) -o src/vm.o -c src/vm.cpp
 
-tests: vm.o test.o test_registers.o test_stack.o test_arithmetic.o
-	$(CXX) -o tests src/vm.o test/test.o test/test_registers.o test/test_stack.o test/test_arithmetic.o
+tests: vm.o test.o test_registers.o test_stack.o test_arithmetic.o test_branching.o
+	$(CXX) -o tests src/vm.o test/test.o test/test_registers.o test/test_stack.o test/test_arithmetic.o test/test_branching.o
 
 test.o: test/test.cpp
 	$(CXX) -o test/test.o -c test/test.cpp
@@ -30,6 +30,9 @@ test_stack.o: test/test_stack.cpp
 
 test_arithmetic.o: test/test_arithmetic.cpp
 	$(CXX) -o test/test_arithmetic.o -c test/test_arithmetic.cpp
+
+test_branching.o: test/test_branching.cpp
+	$(CXX) -o test/test_branching.o -c test/test_branching.cpp
 
 clean:
 	rm -f src/*.o
