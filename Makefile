@@ -1,4 +1,4 @@
-CXX := g++
+CXX ?= g++
 CXXFLAGS := -Wall -O3 -fno-strict-aliasing -g
 
 all: vm tests
