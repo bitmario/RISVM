@@ -425,8 +425,6 @@ def process_instruction(bytecode, line):
         singleop(bytecode, params, Opcodes.HALT)
     elif opcode == "int":
         unop_c(bytecode, params, Opcodes.INT, 1)
-    elif opcode == "syscall":
-        unop_c(bytecode, params, Opcodes.SYSCALL, 1)
     else:
         raise ValueError("Unknown opcode")
 

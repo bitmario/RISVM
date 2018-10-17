@@ -38,12 +38,6 @@ ExecResult VM::run(uint32_t maxInstr)
         {
             return ExecResult::VM_FINISHED;
         }
-        case OP_SYSCALL:
-        {
-            const uint8_t num = _NEXT_BYTE;
-            printf("%u", num);
-            break;
-        }
         case OP_INT:
         {
             if (this->_interruptCallback == nullptr)

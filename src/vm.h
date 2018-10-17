@@ -26,7 +26,6 @@ enum Instruction : uint8_t
     // system:
     OP_NOP,     // do nothing
     OP_HALT,    // halt execution
-    OP_SYSCALL, // call system functions
     OP_INT,     // interrupt which should be handled by user-registered function
     // constants:
     OP_LCONS,  // store a value in a register, e.g.: lcons r0, 0xA2 0x00 0x00 0x00

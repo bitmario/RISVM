@@ -115,7 +115,6 @@ $hello          byte[]  "Hello world!", 0x0A
 ```assembly
 nop                   ; do nothing
 halt                  ; terminate execution
-syscall 0xFF          ; run syscall 0xFF
 int 0xFF              ; trigger interrupt 0xFF
 ```
 
