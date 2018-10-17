@@ -1,6 +1,6 @@
 # RISVM - Reduced Instruction Set VM
 
-[![Build Status](https://travis-ci.com/bitmario/RISVM.svg?branch=master)](https://travis-ci.com/bitmario/RISVM) [![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
+[![Build Status](https://travis-ci.com/bitmario/RISVM.svg?branch=master)](https://travis-ci.com/bitmario/RISVM) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 RISVM is a low-overhead, embeddable RISC-like bytecode virtual machine written in simple C++ and designed to work on any little-endian platform.
 
