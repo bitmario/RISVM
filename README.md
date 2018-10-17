@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.com/bitmario/RISVM.svg?branch=master)](https://travis-ci.com/bitmario/RISVM) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-RISVM is a low-overhead, embeddable RISC-like bytecode virtual machine written in simple C++ and designed to work on any little-endian platform.
+RISVM is a low overhead, embeddable bytecode virtual machine with a RISC architecture which is designed to work on any little-endian platform with GCC or clang.
 
-It includes [tests](test/) and a simple Python 3 [assembler](assembler/) with [documentation](#assembly) and [examples](examples/asm).
+It is implemented in around 1000 lines of simple C++ and includes [tests](test/) and a basic Python 3 [assembler](assembler/) with [documentation](#assembly) and [examples](examples/asm).
 
 This project is still a work in progress, so be aware that backwards compatibility may be broken at any time.
 
@@ -53,6 +53,8 @@ There are 16 general-purpose and 4 special registers, all of which are stored as
 Currently, data resides together with the program so care must be taken to ensure execution flow never reaches data sections. All labels and data references are made using positive 16-bit offsets from the first program byte.
 
 A stack is also available, currently hardcoded to 128 `uint32` values.
+
+Please note that there are currently no checks for stack overflows or out of bounds memory access so there will be undefined behavior if those happen. This is one of the reasons why you shouldn't run untrusted programs or use this for critical applications at this stage.
 
 ### Instructions
 
