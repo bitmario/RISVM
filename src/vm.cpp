@@ -40,10 +40,10 @@ ExecResult VM::run(uint32_t maxInstr)
         }
         case OP_INT:
         {
+            const uint8_t code = _NEXT_BYTE;
+
             if (this->_interruptCallback == nullptr)
                 return ExecResult::VM_ERR_UNHANDLED_INTERRUPT;
-
-            const uint8_t code = _NEXT_BYTE;
             if (!this->_interruptCallback(code))
                 return ExecResult::VM_FINISHED;
             break;
@@ -154,9 +154,9 @@ ExecResult VM::run(uint32_t maxInstr)
         }
         case OP_MEMCPY:
         {
-            const uint16_t bytes = _NEXT_SHORT;
             const uint16_t dest = _NEXT_SHORT;
             const uint16_t source = _NEXT_SHORT;
+            const uint16_t bytes = _NEXT_SHORT;
             memcpy((void *)&this->_program[dest], (void *)&this->_program[source], bytes);
             break;
         }

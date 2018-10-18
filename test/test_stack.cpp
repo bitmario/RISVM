@@ -1,5 +1,4 @@
-#include "lib/catch.hpp"
-#include "../src/vm.h"
+#include "test.h"
 
 TEST_CASE("OP_PUSH")
 {

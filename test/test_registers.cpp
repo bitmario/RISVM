@@ -1,7 +1,4 @@
-#include "lib/catch.hpp"
-#include "../src/vm.h"
-
-#define _U32_GARBAGE 0xF1E2D3C4
+#include "test.h"
 
 TEST_CASE("OP_LCONS")
 {

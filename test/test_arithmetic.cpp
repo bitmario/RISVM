@@ -1,8 +1,4 @@
-#include <math.h>
-#include "lib/catch.hpp"
-#include "../src/vm.h"
-
-#define _ALMOST_EQUAL(x, y) fabs(x - y) < 0.0001
+#include "test.h"
 
 TEST_CASE("OP_INC")
 {
@@ -46,7 +42,7 @@ TEST_CASE("OP_FINC")
     {
         float val = 0.0f;
         float expected = 1.0f;
-        vm.setRegister(R0, *((uint32_t*)&val));
+        vm.setRegister(R0, *((uint32_t *)&val));
         vm.run();
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
@@ -56,7 +52,7 @@ TEST_CASE("OP_FINC")
     {
         float val = 1123497.12f;
         float expected = 1123498.12f;
-        vm.setRegister(R0, *((uint32_t*)&val));
+        vm.setRegister(R0, *((uint32_t *)&val));
         vm.run();
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
@@ -66,7 +62,7 @@ TEST_CASE("OP_FINC")
     {
         float val = -5.0f;
         float expected = -4.0f;
-        vm.setRegister(R0, *((uint32_t*)&val));
+        vm.setRegister(R0, *((uint32_t *)&val));
         vm.run();
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
@@ -115,7 +111,7 @@ TEST_CASE("OP_FDEC")
     {
         float val = 0.0f;
         float expected = -1.0f;
-        vm.setRegister(R0, *((uint32_t*)&val));
+        vm.setRegister(R0, *((uint32_t *)&val));
         vm.run();
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
@@ -125,7 +121,7 @@ TEST_CASE("OP_FDEC")
     {
         float val = 1123497.12f;
         float expected = 1123496.12f;
-        vm.setRegister(R0, *((uint32_t*)&val));
+        vm.setRegister(R0, *((uint32_t *)&val));
         vm.run();
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
@@ -135,7 +131,7 @@ TEST_CASE("OP_FDEC")
     {
         float val = -5.0f;
         float expected = -6.0f;
-        vm.setRegister(R0, *((uint32_t*)&val));
+        vm.setRegister(R0, *((uint32_t *)&val));
         vm.run();
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
