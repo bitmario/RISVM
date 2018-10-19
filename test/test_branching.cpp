@@ -9,9 +9,9 @@ TEST_CASE("OP_JMP")
             OP_HALT,
             OP_LCONSB, R0, 1,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 }
@@ -25,10 +25,10 @@ TEST_CASE("OP_JR")
             OP_HALT,
             OP_LCONSB, R0, 1,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         vm.setRegister(R1, 3);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 }
@@ -40,13 +40,13 @@ TEST_CASE("OP_JZ")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("True")
     {
         REQUIRE(vm.getRegister(R1) == 0);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -55,7 +55,7 @@ TEST_CASE("OP_JZ")
         vm.reset();
         vm.setRegister(R1, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 }
@@ -67,13 +67,13 @@ TEST_CASE("OP_JNZ")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("True")
     {
         vm.setRegister(R1, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -82,7 +82,7 @@ TEST_CASE("OP_JNZ")
         vm.reset();
         REQUIRE(vm.getRegister(R1) == 0);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 }
@@ -94,14 +94,14 @@ TEST_CASE("OP_JE")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("True")
     {
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -111,7 +111,7 @@ TEST_CASE("OP_JE")
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R1) == 0);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 }
@@ -123,14 +123,14 @@ TEST_CASE("OP_JNE")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("False")
     {
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -140,7 +140,7 @@ TEST_CASE("OP_JNE")
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R1) == 0);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 }
@@ -152,14 +152,14 @@ TEST_CASE("OP_JA")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("True")
     {
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 122);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -169,7 +169,7 @@ TEST_CASE("OP_JA")
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -179,7 +179,7 @@ TEST_CASE("OP_JA")
         vm.setRegister(R1, 122);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 }
@@ -191,7 +191,7 @@ TEST_CASE("OP_JG")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("True - negative")
     {
@@ -200,7 +200,7 @@ TEST_CASE("OP_JG")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -212,7 +212,7 @@ TEST_CASE("OP_JG")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -224,7 +224,7 @@ TEST_CASE("OP_JG")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -236,7 +236,7 @@ TEST_CASE("OP_JG")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -248,7 +248,7 @@ TEST_CASE("OP_JG")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 }
@@ -260,14 +260,14 @@ TEST_CASE("OP_JAE")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("True - above")
     {
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 122);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -277,7 +277,7 @@ TEST_CASE("OP_JAE")
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -287,7 +287,7 @@ TEST_CASE("OP_JAE")
         vm.setRegister(R1, 122);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 }
@@ -299,7 +299,7 @@ TEST_CASE("OP_JGE")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("True - greater negative")
     {
@@ -308,7 +308,7 @@ TEST_CASE("OP_JGE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -320,7 +320,7 @@ TEST_CASE("OP_JGE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -332,7 +332,7 @@ TEST_CASE("OP_JGE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -344,7 +344,7 @@ TEST_CASE("OP_JGE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -356,7 +356,7 @@ TEST_CASE("OP_JGE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 }
@@ -368,14 +368,14 @@ TEST_CASE("OP_JB")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("False - above")
     {
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 122);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -385,7 +385,7 @@ TEST_CASE("OP_JB")
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -395,7 +395,7 @@ TEST_CASE("OP_JB")
         vm.setRegister(R1, 122);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 }
@@ -407,7 +407,7 @@ TEST_CASE("OP_JL")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("False - greater negative")
     {
@@ -416,7 +416,7 @@ TEST_CASE("OP_JL")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -428,7 +428,7 @@ TEST_CASE("OP_JL")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -440,7 +440,7 @@ TEST_CASE("OP_JL")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -452,7 +452,7 @@ TEST_CASE("OP_JL")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -464,7 +464,7 @@ TEST_CASE("OP_JL")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 }
@@ -476,14 +476,14 @@ TEST_CASE("OP_JBE")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("False - above")
     {
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 122);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -493,7 +493,7 @@ TEST_CASE("OP_JBE")
         vm.setRegister(R1, 123);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -503,7 +503,7 @@ TEST_CASE("OP_JBE")
         vm.setRegister(R1, 122);
         vm.setRegister(R2, 123);
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 }
@@ -515,7 +515,7 @@ TEST_CASE("OP_JLE")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("False - greater negative")
     {
@@ -524,7 +524,7 @@ TEST_CASE("OP_JLE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -536,7 +536,7 @@ TEST_CASE("OP_JLE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -548,7 +548,7 @@ TEST_CASE("OP_JLE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -560,7 +560,7 @@ TEST_CASE("OP_JLE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -572,7 +572,7 @@ TEST_CASE("OP_JLE")
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
         REQUIRE(vm.getRegister(R0) == 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 }

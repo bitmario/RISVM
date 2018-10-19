@@ -16,17 +16,17 @@ TEST_CASE("OP_INT")
         uint8_t program[] = {
             OP_INT, 3,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         vm.onInterrupt(handleInterrupt);
         intContinue = true;
         intCode = 0;
 
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(intCode == 3);
 
         program[1] = 253;
         vm.reset();
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(intCode == 253);
     }
 
@@ -36,7 +36,7 @@ TEST_CASE("OP_INT")
             OP_INT, 3,
             OP_LCONSB, R0, 123,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         vm.onInterrupt(handleInterrupt);
         intContinue = true;
         intCode = 0;
@@ -61,7 +61,7 @@ TEST_CASE("OP_INT")
             OP_INT, 3,
             OP_LCONSB, R0, 123,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         REQUIRE(vm.run() == ExecResult::VM_ERR_UNHANDLED_INTERRUPT);
         REQUIRE(vm.getRegister(IP) == 1);
     }
@@ -73,9 +73,9 @@ TEST_CASE("OP_HALT")
         OP_HALT,
         OP_LCONSB, R0, 1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
     vm.setRegister(R0, 123);
-    vm.run();
+    REQUIRE(vm.run() == ExecResult::VM_FINISHED);
     REQUIRE(vm.getRegister(R0) == 123);
     REQUIRE(vm.getRegister(IP) == 0);
 }
@@ -85,8 +85,8 @@ TEST_CASE("OP_NOP")
     uint8_t program[] = {
         OP_NOP,
         OP_HALT};
-    VM vm(program);
-    vm.run();
+    VM vm(program, sizeof(program));
+    REQUIRE(vm.run() == ExecResult::VM_FINISHED);
 
     SECTION("Registers unchanged")
     {

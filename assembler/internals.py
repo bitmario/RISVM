@@ -403,10 +403,6 @@ def process_instruction(bytecode, line):
         unop(bytecode, params, Opcodes.READC)
     elif opcode == "reads":
         binop_cc(bytecode, params, Opcodes.READS, 2, 2)
-    elif opcode == "i2s":
-        binop_cr(bytecode, params, Opcodes.I2S, 2)
-    elif opcode == "s2i":
-        binop_rc(bytecode, params, Opcodes.S2I, 2)
     elif opcode == "a_dr":
         binop_rc(bytecode, params, Opcodes.A_DR, 1)
     elif opcode == "a_ar":

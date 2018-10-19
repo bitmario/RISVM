@@ -1,5 +1,5 @@
 CXX ?= g++
-CXXFLAGS := -std=c++11 -Wall -O3 -fno-strict-aliasing -g
+CXXFLAGS := -std=c++11 -Wall -O2 -march=native -fno-strict-aliasing -g
 CXXFLAGS_TEST = -std=c++11 -fno-strict-aliasing 
 
 all: vm tests

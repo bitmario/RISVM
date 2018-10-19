@@ -29,7 +29,7 @@ Include `vm.h` in your project and do something like this:
 
 ```cpp
 uint8_t program[] = { ... };
-VM vm(program); 
+VM vm(program, sizeof(program)); 
 vm.run();
 ```
 

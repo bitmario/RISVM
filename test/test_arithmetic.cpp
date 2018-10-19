@@ -5,12 +5,12 @@ TEST_CASE("OP_INC")
     uint8_t program[] = {
         OP_INC, R0,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("Zero")
     {
         vm.setRegister(R0, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -18,7 +18,7 @@ TEST_CASE("OP_INC")
     {
         vm.reset();
         vm.setRegister(R0, 1123497651);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1123497652);
     }
 
@@ -26,7 +26,7 @@ TEST_CASE("OP_INC")
     {
         vm.reset();
         vm.setRegister(R0, UINT32_MAX);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 }
@@ -36,14 +36,14 @@ TEST_CASE("OP_FINC")
     uint8_t program[] = {
         OP_FINC, R0,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("Zero")
     {
         float val = 0.0f;
         float expected = 1.0f;
         vm.setRegister(R0, *((uint32_t *)&val));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -53,7 +53,7 @@ TEST_CASE("OP_FINC")
         float val = 1123497.12f;
         float expected = 1123498.12f;
         vm.setRegister(R0, *((uint32_t *)&val));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -63,7 +63,7 @@ TEST_CASE("OP_FINC")
         float val = -5.0f;
         float expected = -4.0f;
         vm.setRegister(R0, *((uint32_t *)&val));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -74,12 +74,12 @@ TEST_CASE("OP_DEC")
     uint8_t program[] = {
         OP_DEC, R0,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("Zero")
     {
         vm.setRegister(R0, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == UINT32_MAX);
     }
 
@@ -87,7 +87,7 @@ TEST_CASE("OP_DEC")
     {
         vm.reset();
         vm.setRegister(R0, 1123497651);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1123497650);
     }
 
@@ -95,7 +95,7 @@ TEST_CASE("OP_DEC")
     {
         vm.reset();
         vm.setRegister(R0, UINT32_MAX);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == (UINT32_MAX - 1));
     }
 }
@@ -105,14 +105,14 @@ TEST_CASE("OP_FDEC")
     uint8_t program[] = {
         OP_FDEC, R0,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("Zero")
     {
         float val = 0.0f;
         float expected = -1.0f;
         vm.setRegister(R0, *((uint32_t *)&val));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -122,7 +122,7 @@ TEST_CASE("OP_FDEC")
         float val = 1123497.12f;
         float expected = 1123496.12f;
         vm.setRegister(R0, *((uint32_t *)&val));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -132,7 +132,7 @@ TEST_CASE("OP_FDEC")
         float val = -5.0f;
         float expected = -6.0f;
         vm.setRegister(R0, *((uint32_t *)&val));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -143,13 +143,13 @@ TEST_CASE("OP_ADD")
     uint8_t program[] = {
         OP_ADD, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("0 + 0")
     {
         vm.setRegister(R1, 0);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -158,7 +158,7 @@ TEST_CASE("OP_ADD")
         vm.reset();
         vm.setRegister(R1, 1123497651);
         vm.setRegister(R2, 987513);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1124485164);
     }
 
@@ -167,7 +167,7 @@ TEST_CASE("OP_ADD")
         vm.reset();
         vm.setRegister(R1, UINT32_MAX);
         vm.setRegister(R2, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 }
@@ -177,14 +177,14 @@ TEST_CASE("OP_FADD")
     uint8_t program[] = {
         OP_FADD, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("0 + 0")
     {
         float val = 0.0f;
         vm.setRegister(R1, *((uint32_t *)&val));
         vm.setRegister(R2, *((uint32_t *)&val));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), val));
     }
@@ -197,7 +197,7 @@ TEST_CASE("OP_FADD")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -210,7 +210,7 @@ TEST_CASE("OP_FADD")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -221,13 +221,13 @@ TEST_CASE("OP_SUB")
     uint8_t program[] = {
         OP_SUB, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("0 - 0")
     {
         vm.setRegister(R1, 0);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -236,7 +236,7 @@ TEST_CASE("OP_SUB")
         vm.reset();
         vm.setRegister(R1, 1123497651);
         vm.setRegister(R2, 987513);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1122510138);
     }
 
@@ -245,7 +245,7 @@ TEST_CASE("OP_SUB")
         vm.reset();
         vm.setRegister(R1, 0);
         vm.setRegister(R2, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == UINT32_MAX);
     }
 }
@@ -255,14 +255,14 @@ TEST_CASE("OP_FSUB")
     uint8_t program[] = {
         OP_FSUB, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("0 - 0")
     {
         float val = 0.0f;
         vm.setRegister(R1, *((uint32_t *)&val));
         vm.setRegister(R2, *((uint32_t *)&val));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), val));
     }
@@ -275,7 +275,7 @@ TEST_CASE("OP_FSUB")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -288,7 +288,7 @@ TEST_CASE("OP_FSUB")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -299,13 +299,13 @@ TEST_CASE("OP_MUL")
     uint8_t program[] = {
         OP_MUL, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("1 * 0")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -314,7 +314,7 @@ TEST_CASE("OP_MUL")
         vm.reset();
         vm.setRegister(R1, 2);
         vm.setRegister(R2, 2);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 4);
     }
 
@@ -323,7 +323,7 @@ TEST_CASE("OP_MUL")
         vm.reset();
         vm.setRegister(R1, 347);
         vm.setRegister(R2, 987513);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 342667011);
     }
 }
@@ -333,13 +333,13 @@ TEST_CASE("OP_IMUL")
     uint8_t program[] = {
         OP_IMUL, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("1 * 0")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -348,7 +348,7 @@ TEST_CASE("OP_IMUL")
         vm.reset();
         vm.setRegister(R1, 2);
         vm.setRegister(R2, 2);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 4);
     }
 
@@ -360,7 +360,7 @@ TEST_CASE("OP_IMUL")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == *((uint32_t *)&expected));
     }
 }
@@ -370,7 +370,7 @@ TEST_CASE("OP_FMUL")
     uint8_t program[] = {
         OP_FMUL, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("1 * 0")
     {
@@ -378,7 +378,7 @@ TEST_CASE("OP_FMUL")
         float val2 = 0.0f;
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == *((uint32_t *)&val2));
     }
 
@@ -390,7 +390,7 @@ TEST_CASE("OP_FMUL")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -403,7 +403,7 @@ TEST_CASE("OP_FMUL")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -414,7 +414,7 @@ TEST_CASE("OP_DIV")
     uint8_t program[] = {
         OP_DIV, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     // SECTION("1 / 0")
     // {
@@ -426,7 +426,7 @@ TEST_CASE("OP_DIV")
         vm.reset();
         vm.setRegister(R1, 2);
         vm.setRegister(R2, 2);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -435,7 +435,7 @@ TEST_CASE("OP_DIV")
         vm.reset();
         vm.setRegister(R1, 987513);
         vm.setRegister(R2, 347);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 2845);
     }
 }
@@ -445,7 +445,7 @@ TEST_CASE("OP_IDIV")
     uint8_t program[] = {
         OP_IDIV, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     // SECTION("1 / 0")
     // {
@@ -457,7 +457,7 @@ TEST_CASE("OP_IDIV")
         vm.reset();
         vm.setRegister(R1, 2);
         vm.setRegister(R2, 2);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -469,7 +469,7 @@ TEST_CASE("OP_IDIV")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == *((uint32_t *)&expected));
     }
 }
@@ -479,7 +479,7 @@ TEST_CASE("OP_FDIV")
     uint8_t program[] = {
         OP_FDIV, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     // SECTION("1 / 0")
     // {
@@ -494,7 +494,7 @@ TEST_CASE("OP_FDIV")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -507,7 +507,7 @@ TEST_CASE("OP_FDIV")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         uint32_t actual = vm.getRegister(R0);
         REQUIRE(_ALMOST_EQUAL(*((float *)&actual), expected));
     }
@@ -518,13 +518,13 @@ TEST_CASE("OP_SHL")
     uint8_t program[] = {
         OP_SHL, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("1 << 0")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -533,7 +533,7 @@ TEST_CASE("OP_SHL")
         vm.reset();
         vm.setRegister(R1, 0xFF00);
         vm.setRegister(R2, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0x1FE00);
     }
 
@@ -542,7 +542,7 @@ TEST_CASE("OP_SHL")
         vm.reset();
         vm.setRegister(R1, 0xA310);
         vm.setRegister(R2, 16);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0xA3100000);
     }
 }
@@ -552,13 +552,13 @@ TEST_CASE("OP_SHR")
     uint8_t program[] = {
         OP_SHR, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("1 >> 0")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -567,7 +567,7 @@ TEST_CASE("OP_SHR")
         vm.reset();
         vm.setRegister(R1, 0xFF00);
         vm.setRegister(R2, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0x7F80);
     }
 
@@ -576,7 +576,7 @@ TEST_CASE("OP_SHR")
         vm.reset();
         vm.setRegister(R1, 0xA3100000);
         vm.setRegister(R2, 16);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0xA310);
     }
 }
@@ -586,13 +586,13 @@ TEST_CASE("OP_ISHR")
     uint8_t program[] = {
         OP_ISHR, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("1 >> 0")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -603,7 +603,7 @@ TEST_CASE("OP_ISHR")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == *((uint32_t *)&expected));
     }
 
@@ -614,7 +614,7 @@ TEST_CASE("OP_ISHR")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == *((uint32_t *)&expected));
     }
 }
@@ -624,7 +624,7 @@ TEST_CASE("OP_MOD")
     uint8_t program[] = {
         OP_MOD, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     // SECTION("1 % 0")
     // {
@@ -636,7 +636,7 @@ TEST_CASE("OP_MOD")
         vm.reset();
         vm.setRegister(R1, 2);
         vm.setRegister(R2, 2);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -645,7 +645,7 @@ TEST_CASE("OP_MOD")
         vm.reset();
         vm.setRegister(R1, 987513);
         vm.setRegister(R2, 347);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 298);
     }
 }
@@ -655,7 +655,7 @@ TEST_CASE("OP_IMOD")
     uint8_t program[] = {
         OP_IMOD, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     // SECTION("1 / 0")
     // {
@@ -667,7 +667,7 @@ TEST_CASE("OP_IMOD")
         vm.reset();
         vm.setRegister(R1, 2);
         vm.setRegister(R2, 2);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -679,7 +679,7 @@ TEST_CASE("OP_IMOD")
         vm.reset();
         vm.setRegister(R1, *((uint32_t *)&val1));
         vm.setRegister(R2, *((uint32_t *)&val2));
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == *((uint32_t *)&expected));
     }
 }
@@ -689,13 +689,13 @@ TEST_CASE("OP_AND")
     uint8_t program[] = {
         OP_AND, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("0 & 0")
     {
         vm.setRegister(R1, 0);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -703,7 +703,7 @@ TEST_CASE("OP_AND")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -711,7 +711,7 @@ TEST_CASE("OP_AND")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -719,7 +719,7 @@ TEST_CASE("OP_AND")
     {
         vm.setRegister(R1, 0xF1F1F1F1);
         vm.setRegister(R2, 0xEAD1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0xE0D1);
     }
 }
@@ -729,13 +729,13 @@ TEST_CASE("OP_OR")
     uint8_t program[] = {
         OP_OR, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("0 | 0")
     {
         vm.setRegister(R1, 0);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -743,7 +743,7 @@ TEST_CASE("OP_OR")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -751,7 +751,7 @@ TEST_CASE("OP_OR")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -759,7 +759,7 @@ TEST_CASE("OP_OR")
     {
         vm.setRegister(R1, 0xF1F1F1F1);
         vm.setRegister(R2, 0xEAD1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0xF1F1FBF1);
     }
 }
@@ -769,13 +769,13 @@ TEST_CASE("OP_XOR")
     uint8_t program[] = {
         OP_XOR, R0, R1, R2,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("0 ^ 0")
     {
         vm.setRegister(R1, 0);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -783,7 +783,7 @@ TEST_CASE("OP_XOR")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1);
     }
 
@@ -791,7 +791,7 @@ TEST_CASE("OP_XOR")
     {
         vm.setRegister(R1, 1);
         vm.setRegister(R2, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -799,7 +799,7 @@ TEST_CASE("OP_XOR")
     {
         vm.setRegister(R1, 0xF1F1F1F1);
         vm.setRegister(R2, 0xEAD1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0xF1F11B20);
     }
 }
@@ -809,26 +809,26 @@ TEST_CASE("OP_NOT")
     uint8_t program[] = {
         OP_NOT, R0, R1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("!0")
     {
         vm.setRegister(R1, 0);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0xFFFFFFFF);
     }
 
     SECTION("!1")
     {
         vm.setRegister(R1, 1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0xFFFFFFFE);
     }
 
     SECTION("!0xF1F1F1F1")
     {
         vm.setRegister(R1, 0xF1F1F1F1);
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0xE0E0E0E);
     }
 }

@@ -7,9 +7,9 @@ TEST_CASE("OP_LCONS")
         uint8_t program[] = {
             OP_LCONS, R0, 0, 0, 0, 0,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         vm.setRegister(R0, _U32_GARBAGE); // set garbage
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -18,9 +18,9 @@ TEST_CASE("OP_LCONS")
         uint8_t program[] = {
             OP_LCONS, R0, 0xFF, 0xFF, 0xFF, 0xFF,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         vm.setRegister(R0, _U32_GARBAGE); // set garbage
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == UINT32_MAX);
     }
 }
@@ -32,9 +32,9 @@ TEST_CASE("OP_LCONSW")
         uint8_t program[] = {
             OP_LCONSW, R0, 0, 0,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         vm.setRegister(R0, _U32_GARBAGE); // set garbage
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -43,9 +43,9 @@ TEST_CASE("OP_LCONSW")
         uint8_t program[] = {
             OP_LCONSW, R0, 0xFF, 0xFF,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         vm.setRegister(R0, _U32_GARBAGE); // set garbage
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == UINT16_MAX);
     }
 }
@@ -57,9 +57,9 @@ TEST_CASE("OP_LCONSB")
         uint8_t program[] = {
             OP_LCONSB, R0, 0,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         vm.setRegister(R0, _U32_GARBAGE); // set garbage
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -68,9 +68,9 @@ TEST_CASE("OP_LCONSB")
         uint8_t program[] = {
             OP_LCONSB, R0, 0xFF,
             OP_HALT};
-        VM vm(program);
+        VM vm(program, sizeof(program));
         vm.setRegister(R0, _U32_GARBAGE); // set garbage
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == UINT8_MAX);
     }
 }
@@ -80,14 +80,14 @@ TEST_CASE("OP_MOV")
     uint8_t program[] = {
         OP_MOV, R0, R1,
         OP_HALT};
-    VM vm(program);
+    VM vm(program, sizeof(program));
 
     SECTION("Load zero")
     {
         vm.reset();
         vm.setRegister(R1, 0);
         vm.setRegister(R0, _U32_GARBAGE); // set garbage
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 0);
     }
 
@@ -96,7 +96,7 @@ TEST_CASE("OP_MOV")
         vm.reset();
         vm.setRegister(R1, 1122334455U);
         vm.setRegister(R0, _U32_GARBAGE); // set garbage
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == 1122334455U);
     }
 
@@ -105,7 +105,7 @@ TEST_CASE("OP_MOV")
         vm.reset();
         vm.setRegister(R1, UINT32_MAX);
         vm.setRegister(R0, _U32_GARBAGE); // set garbage
-        vm.run();
+        REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(vm.getRegister(R0) == UINT32_MAX);
     }
 }

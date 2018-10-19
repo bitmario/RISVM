@@ -17,16 +17,20 @@ enum ExecResult : uint8_t
     VM_FINISHED,                // execution completed (i.e. got halt instruction)
     VM_PAUSED,                  // execution paused since we hit the maximum instructions
     VM_ERR_UNKNOWN_OPCODE,      // unknown opcode
+    VM_ERR_UNSUPPORTED_OPCODE,  // instruction not supported on this platform
     VM_ERR_UNHANDLED_INTERRUPT, // interrupt triggered without registered handler
     VM_ERR_STACK_OVERFLOW,      // stack overflow
+    VM_ERR_STACK_UNDERFLOW,     // stack underflow
+    VM_ERR_PROGRAM_OVERRUN,     // tried to access memory beyond the program
+    VM_ERR_INVALID_REGISTER,    // invalid register access
 };
 
 enum Instruction : uint8_t
 {
     // system:
-    OP_NOP,     // do nothing
-    OP_HALT,    // halt execution
-    OP_INT,     // interrupt which should be handled by user-registered function
+    OP_NOP,  // do nothing
+    OP_HALT, // halt execution
+    OP_INT,  // interrupt which should be handled by user-registered function
     // constants:
     OP_LCONS,  // store a value in a register, e.g.: lcons r0, 0xA2 0x00 0x00 0x00
     OP_LCONSW, // store a word value in a register, e.g.: lconsw r0, 0xA2 0x00
@@ -105,8 +109,6 @@ enum Instruction : uint8_t
     OP_READF,   // read a float from stdin to the specified register
     OP_READC,   // read a single character's code from stdin to the specified register
     OP_READS,   // read a line to the specified memory address, to a maximum length
-    OP_I2S,     // convert an int stored in a register to a string in a specific address, e.g.: i2s 0x20 0x00, r0
-    OP_S2I,     // convert a string at the specified address to an int in a register, e.g.: s2i r0, 0x20 0x00
 #ifdef ARDUINO
     // Arduino:
     OP_A_DR,  // digital read from a pin to a register, e.g.: dr r0, 0x0A
@@ -152,7 +154,7 @@ enum Register : uint8_t
 class VM
 {
   public:
-    VM(uint8_t *program);
+    VM(uint8_t *program, uint16_t progLen);
     ~VM();
     ExecResult run(uint32_t maxInstr = UINT32_MAX);
     void reset()
@@ -174,6 +176,7 @@ class VM
     uint8_t *_program;
     uint32_t _stack[VM_STACK_SIZE] = {0};
     uint32_t _registers[REGISTER_COUNT] = {0};
+    const uint16_t _progLen;
     bool (*_interruptCallback)(uint8_t) = nullptr;
 };
 
