@@ -154,7 +154,7 @@ enum Register : uint8_t
 class VM
 {
   public:
-    VM(uint8_t *program, uint16_t progLen);
+    VM(uint8_t *program, uint16_t progLen, uint32_t *stack = nullptr, uint16_t stackSize = 128);
     ~VM();
     ExecResult run(uint32_t maxInstr = UINT32_MAX);
     void reset()
@@ -174,9 +174,11 @@ class VM
 
   protected:
     uint8_t *_program;
-    uint32_t _stack[VM_STACK_SIZE] = {0};
+    uint32_t *_stack;
     uint32_t _registers[REGISTER_COUNT] = {0};
+    const uint16_t _stackSize;
     const uint16_t _progLen;
+    bool _freeStack = false;
     bool (*_interruptCallback)(uint8_t) = nullptr;
 };
 

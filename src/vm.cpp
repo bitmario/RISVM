@@ -34,13 +34,22 @@
 #define _CHECK_CAN_POP(n)
 #endif
 
-VM::VM(uint8_t *program, uint16_t progLen)
-    : _program(program), _progLen(progLen)
+VM::VM(uint8_t *program, uint16_t progLen, uint32_t *stack, uint16_t stackSize)
+    : _program(program), _progLen(progLen), _stackSize(stackSize)
 {
+    if (stack == nullptr)
+    {
+        this->_stack = new uint32_t[stackSize];
+        this->_freeStack = true;
+    }
+    else
+        this->_stack = stack;
 }
 
 VM::~VM()
 {
+    if (this->_freeStack)
+        delete[] this->_stack;
 }
 
 ExecResult VM::run(uint32_t maxInstr)
