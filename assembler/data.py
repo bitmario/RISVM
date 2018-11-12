@@ -57,12 +57,19 @@ class Opcodes(AutoNumber):
     RET = ()  # return to the address of last callee (RA) = () e.g.: ret
     # memory:
     STOR = ()   # copy a value from a register to a heap address = () e.g.: stor 0x08 0x00 = () r0
+    STOR_P = ()
     STORW = ()  # copy a word value from a register to a heap address = () e.g.: storw 0x08 0x00 = () r0
+    STORW_P = ()
     STORB = ()  # copy a byte value from a register to a heap address = () e.g.: storb 0x08 0x00 = () r0
+    STORB_P = ()
     LOAD = ()   # copy a value from a heap address to a register = () e.g.: load r0 = () 0x08 0x00
+    LOAD_P = ()
     LOADW = ()  # copy a word value from a heap address to a register = () e.g.: loadw r0 = () 0x08 0x00
+    LOADW_P = ()
     LOADB = ()  # copy a byte value from a heap address to a register = () e.g.: loadb r0 = () 0x08 0x00
+    LOADB_P = ()
     MEMCPY = () # copy N bytes from one memory address S to another address D = () e.g.: memcpy 0xDD 0xDD = () 0xSS 0xSS = () 0xNN 0xNN
+    MEMCPY_P = ()
     # arithmetic:
     INC = ()  # increment the specified register = () e.g.: inc r0
     FINC = () # increment a float in the specified register = () e.g.: incf r0

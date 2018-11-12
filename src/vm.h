@@ -10,19 +10,17 @@
 #include <Arduino.h>
 #endif
 
-#define VM_STACK_SIZE 128
-
 enum ExecResult : uint8_t
 {
     VM_FINISHED,                // execution completed (i.e. got halt instruction)
     VM_PAUSED,                  // execution paused since we hit the maximum instructions
     VM_ERR_UNKNOWN_OPCODE,      // unknown opcode
     VM_ERR_UNSUPPORTED_OPCODE,  // instruction not supported on this platform
+    VM_ERR_INVALID_REGISTER,    // invalid register access
     VM_ERR_UNHANDLED_INTERRUPT, // interrupt triggered without registered handler
     VM_ERR_STACK_OVERFLOW,      // stack overflow
     VM_ERR_STACK_UNDERFLOW,     // stack underflow
-    VM_ERR_PROGRAM_OVERRUN,     // tried to access memory beyond the program
-    VM_ERR_INVALID_REGISTER,    // invalid register access
+    VM_ERR_INVALID_ADDRESS,     // tried to access an invalid memory address
 };
 
 enum Instruction : uint8_t
@@ -47,12 +45,19 @@ enum Instruction : uint8_t
     OP_RET,  // return to the address of last callee (RA), e.g.: ret
     // memory:
     OP_STOR,   // copy a value from a register to a heap address, e.g.: stor 0x08 0x00, r0
+    OP_STOR_P,
     OP_STORW,  // copy a word value from a register to a heap address, e.g.: storw 0x08 0x00, r0
+    OP_STORW_P,
     OP_STORB,  // copy a byte value from a register to a heap address, e.g.: storb 0x08 0x00, r0
+    OP_STORB_P,
     OP_LOAD,   // copy a value from a heap address to a register, e.g.: load r0, 0x08 0x00
+    OP_LOAD_P,
     OP_LOADW,  // copy a word value from a heap address to a register, e.g.: loadw r0, 0x08 0x00
+    OP_LOADW_P,
     OP_LOADB,  // copy a byte value from a heap address to a register, e.g.: loadb r0, 0x08 0x00
+    OP_LOADB_P,
     OP_MEMCPY, // copy N bytes from one memory address S to another address D, e.g.: memcpy 0xDD 0xDD, 0xSS 0xSS, 0xNN 0xNN
+    OP_MEMCPY_P,
     // arithmetic:
     OP_INC,  // increment the specified register, e.g.: inc r0
     OP_FINC, // increment a float in the specified register, e.g.: incf r0
@@ -154,31 +159,28 @@ enum Register : uint8_t
 class VM
 {
   public:
-    VM(uint8_t *program, uint16_t progLen, uint32_t *stack = nullptr, uint16_t stackSize = 128);
+    VM(uint8_t *program, uint16_t progLen, uint16_t stackSize = 256);
     ~VM();
-    ExecResult run(uint32_t maxInstr = UINT32_MAX);
-    void reset()
-    {
-        for (int i = 0; i < REGISTER_COUNT; i++)
-            this->_registers[i] = 0;
-    }
 
-    void onInterrupt(bool (*callback)(uint8_t)) { this->_interruptCallback = callback; }
+    ExecResult run(uint32_t maxInstr = 0);
+    void reset();
+    void onInterrupt(bool (*callback)(uint8_t));
 
-    uint32_t stackCount() { return this->_registers[SP]; }
-    void stackPush(uint32_t value) { this->_stack[this->_registers[SP]++] = value; }
-    uint32_t stackPop() { return this->_stack[--this->_registers[SP]]; }
+    uint32_t stackCount();
+    void stackPush(uint32_t value);
+    uint32_t stackPop();
 
-    uint32_t getRegister(Register reg) { return this->_registers[reg]; }
-    void setRegister(Register reg, uint32_t val) { this->_registers[reg] = val; }
+    uint8_t *memory(uint16_t addr = 0);
+
+    uint32_t getRegister(Register reg);
+    void setRegister(Register reg, uint32_t val);
 
   protected:
-    uint8_t *_program;
-    uint32_t *_stack;
+    uint8_t *_memory;
     uint32_t _registers[REGISTER_COUNT] = {0};
+    const uint16_t _memSize;
     const uint16_t _stackSize;
     const uint16_t _progLen;
-    bool _freeStack = false;
     bool (*_interruptCallback)(uint8_t) = nullptr;
 };
 

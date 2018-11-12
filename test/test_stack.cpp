@@ -11,7 +11,7 @@ TEST_CASE("OP_PUSH")
     {
         vm.setRegister(R0, 0);
         REQUIRE(vm.run() == ExecResult::VM_FINISHED);
-        REQUIRE(vm.stackCount() == 1);
+        REQUIRE(vm.stackCount() == 4);
         REQUIRE(vm.stackPop() == 0);
     }
 
@@ -20,7 +20,7 @@ TEST_CASE("OP_PUSH")
         vm.reset();
         vm.setRegister(R0, 1123497651);
         REQUIRE(vm.run() == ExecResult::VM_FINISHED);
-        REQUIRE(vm.stackCount() == 1);
+        REQUIRE(vm.stackCount() == 4);
         REQUIRE(vm.stackPop() == 1123497651);
     }
 
@@ -29,7 +29,7 @@ TEST_CASE("OP_PUSH")
         vm.reset();
         vm.setRegister(R0, UINT32_MAX);
         REQUIRE(vm.run() == ExecResult::VM_FINISHED);
-        REQUIRE(vm.stackCount() == 1);
+        REQUIRE(vm.stackCount() == 4);
         REQUIRE(vm.stackPop() == UINT32_MAX);
     }
 }
@@ -119,7 +119,7 @@ TEST_CASE("OP_DUP")
     {
         vm.stackPush(0);
         REQUIRE(vm.run() == ExecResult::VM_FINISHED);
-        REQUIRE(vm.stackCount() == 2);
+        REQUIRE(vm.stackCount() == 8);
         REQUIRE(vm.stackPop() == 0);
         REQUIRE(vm.stackPop() == 0);
     }
@@ -129,7 +129,7 @@ TEST_CASE("OP_DUP")
         vm.reset();
         vm.stackPush(1123497651);
         REQUIRE(vm.run() == ExecResult::VM_FINISHED);
-        REQUIRE(vm.stackCount() == 2);
+        REQUIRE(vm.stackCount() == 8);
         REQUIRE(vm.stackPop() == 1123497651);
         REQUIRE(vm.stackPop() == 1123497651);
     }
@@ -139,7 +139,7 @@ TEST_CASE("OP_DUP")
         vm.reset();
         vm.stackPush(UINT32_MAX);
         REQUIRE(vm.run() == ExecResult::VM_FINISHED);
-        REQUIRE(vm.stackCount() == 2);
+        REQUIRE(vm.stackCount() == 8);
         REQUIRE(vm.stackPop() == UINT32_MAX);
         REQUIRE(vm.stackPop() == UINT32_MAX);
     }

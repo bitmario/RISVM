@@ -24,8 +24,11 @@ TEST_CASE("OP_INT")
         REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(intCode == 3);
 
-        program[1] = 253;
         vm.reset();
+        uint8_t *memory = vm.memory();
+        intCode = 0;
+        memory[1] = 253;
+
         REQUIRE(vm.run() == ExecResult::VM_FINISHED);
         REQUIRE(intCode == 253);
     }

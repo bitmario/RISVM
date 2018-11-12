@@ -2,7 +2,7 @@
 .main:
     call    .sub1
     pop     r1
-    print   r1
+    print   r1, 1
     halt
 
 .sub1:

@@ -287,18 +287,32 @@ def process_instruction(bytecode, line):
         singleop(bytecode, params, Opcodes.RET)
     elif opcode == "stor":
         binop_cr(bytecode, params, Opcodes.STOR, 2)
+    elif opcode == "stor_p":
+        binop(bytecode, params, Opcodes.STOR_P)
     elif opcode == "storw":
         binop_cr(bytecode, params, Opcodes.STORW, 2)
+    elif opcode == "storw_p":
+        binop(bytecode, params, Opcodes.STORW_P)
     elif opcode == "storb":
         binop_cr(bytecode, params, Opcodes.STORB, 2)
+    elif opcode == "storb_p":
+        binop(bytecode, params, Opcodes.STORB_P)
     elif opcode == "load":
         binop_rc(bytecode, params, Opcodes.LOAD, 2)
+    elif opcode == "load_p":
+        binop(bytecode, params, Opcodes.LOAD_P)
     elif opcode == "loadw":
         binop_rc(bytecode, params, Opcodes.LOADW, 2)
+    elif opcode == "loadw_p":
+        binop(bytecode, params, Opcodes.LOADW_P)
     elif opcode == "loadb":
         binop_rc(bytecode, params, Opcodes.LOADB, 2)
+    elif opcode == "loadb_p":
+        binop(bytecode, params, Opcodes.LOADB_P)
     elif opcode == "memcpy":
         ternop_ccc(bytecode, params, Opcodes.MEMCPY, 2, 2, 2)
+    elif opcode == "memcpy_p":
+        ternop(bytecode, params, Opcodes.MEMCPY_P)
     elif opcode == "inc":
         unop(bytecode, params, Opcodes.INC)
     elif opcode == "finc":

@@ -147,12 +147,19 @@ ret                   ; return to the address of last caller
 
 ```assembly
 stor $var1, r0        ; store the 32-bit value of r0 in memory location var1
+stor_p r1, r0         ; store the 32-bit value of r0 in the memory location pointed by r1
 storw $var1, r0       ; store the 16-bit value of r0 in memory location var1
+storw_p r1, r0        ; store the 16-bit value of r0 in the memory location pointed by r1
 storb $var1, r0       ; store the 8-bit value of r0 in memory location var1
+storb_p r1, r0        ; store the 8-bit value of r0 in the memory location pointed by r1
 load r0, $var1        ; load the 32-bit value of memory location var1 into r0
+load_p r0, r1         ; load the 32-bit value of the memory location pointed by r1 into r0
 loadw r0, $var1       ; load the 16-bit value of memory location var1 into r0
+loadw_p r0, r1        ; load the 16-bit value of the memory location pointed by r1 into r0
 loadb r0, $var1       ; load the 8-bit value of memory location var1 into r0
+loadb_p r0, r1        ; load the 8-bit value of the memory location pointed by r1 into r0
 memcpy $dest, $src, 0xFFFF  ; copy the specified number of bytes from source to dest
+memcpy_p r0, r1, r2   ; copy the # bytes in r2 from the address in r1 to the address in r0
 ```
 
 #### Arithmetic

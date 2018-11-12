@@ -1,30 +1,30 @@
 #include "vm.h"
 
-#define _NEXT_BYTE this->_program[++this->_registers[IP]]
-#define _NEXT_SHORT ({ this->_registers[IP] += 2; this->_program[this->_registers[IP]-1]\
-                     | this->_program[this->_registers[IP]] << 8; })
-#define _NEXT_INT ({                                                                                 \
-    this->_registers[IP] += 4;                                                                       \
-    this->_program[this->_registers[IP] - 3] | this->_program[this->_registers[IP] - 2] << 8 |       \
-        this->_program[this->_registers[IP] - 1] << 16 | this->_program[this->_registers[IP]] << 24; \
+#define _NEXT_BYTE this->_memory[++this->_registers[IP]]
+#define _NEXT_SHORT ({ this->_registers[IP] += 2; this->_memory[this->_registers[IP]-1]\
+                     | this->_memory[this->_registers[IP]] << 8; })
+#define _NEXT_INT ({                                                                               \
+    this->_registers[IP] += 4;                                                                     \
+    this->_memory[this->_registers[IP] - 3] | this->_memory[this->_registers[IP] - 2] << 8 |       \
+        this->_memory[this->_registers[IP] - 1] << 16 | this->_memory[this->_registers[IP]] << 24; \
 })
 
 #ifndef VM_DISABLE_CHECKS
 #define _CHECK_ADDR_VALID(a) \
-    if (a >= this->_progLen) \
-        return ExecResult::VM_ERR_PROGRAM_OVERRUN;
+    if (a >= this->_memSize) \
+        return ExecResult::VM_ERR_INVALID_ADDRESS;
 #define _CHECK_BYTES_AVAIL(n) \
     _CHECK_ADDR_VALID(this->_registers[IP] + n)
 #define _CHECK_REGISTER_VALID(r) \
     if (r >= REGISTER_COUNT)     \
         return ExecResult::VM_ERR_INVALID_REGISTER;
-#define _CHECK_CAN_PUSH(n)                        \
-    if (this->_registers[SP] + n > VM_STACK_SIZE) \
+#define _CHECK_CAN_PUSH(n)                                              \
+    if (this->_registers[SP] - (n * sizeof(uint32_t)) < this->_progLen) \
         return ExecResult::VM_ERR_STACK_OVERFLOW;
-#define _CHECK_CAN_POP(n)                          \
-    if (this->_registers[SP] < n)                  \
-        return ExecResult::VM_ERR_STACK_UNDERFLOW; \
-    if (this->_registers[SP] > VM_STACK_SIZE)      \
+#define _CHECK_CAN_POP(n)                                               \
+    if (this->_registers[SP] + (n * sizeof(uint32_t)) > this->_memSize) \
+        return ExecResult::VM_ERR_STACK_UNDERFLOW;                      \
+    if (this->_registers[SP] < this->_progLen)                          \
         return ExecResult::VM_ERR_STACK_OVERFLOW;
 #else
 #define _CHECK_ADDR_VALID(a)
@@ -34,32 +34,72 @@
 #define _CHECK_CAN_POP(n)
 #endif
 
-VM::VM(uint8_t *program, uint16_t progLen, uint32_t *stack, uint16_t stackSize)
-    : _program(program), _progLen(progLen), _stackSize(stackSize)
+VM::VM(uint8_t *program, uint16_t progLen, uint16_t stackSize)
+    : _memory(new uint8_t[progLen + stackSize]), _memSize(progLen + stackSize), _progLen(progLen), _stackSize(stackSize)
 {
-    if (stack == nullptr)
-    {
-        this->_stack = new uint32_t[stackSize];
-        this->_freeStack = true;
-    }
-    else
-        this->_stack = stack;
+    memcpy(this->_memory, program, progLen);
+    this->reset();
 }
 
 VM::~VM()
 {
-    if (this->_freeStack)
-        delete[] this->_stack;
+    delete[] this->_memory;
+}
+
+void VM::reset()
+{
+    memset(&this->_memory[this->_progLen], 0, this->_stackSize);
+    memset(this->_registers, 0, REGISTER_COUNT * sizeof(uint32_t));
+    this->_registers[SP] = this->_progLen + this->_stackSize;
+}
+
+void VM::onInterrupt(bool (*callback)(uint8_t))
+{
+    this->_interruptCallback = callback;
+}
+
+uint32_t VM::stackCount()
+{
+    return this->_progLen + this->_stackSize - this->_registers[SP];
+}
+
+void VM::stackPush(uint32_t value)
+{
+    this->_registers[SP] -= 4;
+    memcpy(&this->_memory[this->_registers[SP]], &value, sizeof(uint32_t));
+}
+
+uint32_t VM::stackPop()
+{
+    uint32_t val = 0;
+    memcpy(&val, &this->_memory[this->_registers[SP]], sizeof(uint32_t));
+    this->_registers[SP] += 4;
+    return val;
+}
+
+uint8_t *VM::memory(uint16_t addr)
+{
+    return &this->_memory[addr];
+}
+
+uint32_t VM::getRegister(Register reg)
+{
+    return this->_registers[reg];
+}
+
+void VM::setRegister(Register reg, uint32_t val)
+{
+    this->_registers[reg] = val;
 }
 
 ExecResult VM::run(uint32_t maxInstr)
 {
     uint32_t instrCount = 0;
 
-    while (instrCount < maxInstr)
+    while (maxInstr == 0 || instrCount < maxInstr)
     {
         _CHECK_ADDR_VALID(this->_registers[IP])
-        const uint8_t instr = this->_program[this->_registers[IP]];
+        const uint8_t instr = this->_memory[this->_registers[IP]];
         if (instr >= INSTRUCTION_COUNT)
             return ExecResult::VM_ERR_UNKNOWN_OPCODE;
 
@@ -124,7 +164,8 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
             _CHECK_CAN_PUSH(1)
-            this->_stack[this->_registers[SP]++] = this->_registers[reg];
+            this->_registers[SP] -= 4;
+            memcpy(&this->_memory[this->_registers[SP]], &this->_registers[reg], sizeof(uint32_t));
             break;
         }
         case OP_POP:
@@ -133,7 +174,8 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
             _CHECK_CAN_POP(1)
-            this->_registers[reg] = this->_stack[--this->_registers[SP]];
+            memcpy(&this->_registers[reg], &this->_memory[this->_registers[SP]], sizeof(uint32_t));
+            this->_registers[SP] += 4;
             break;
         }
         case OP_POP2:
@@ -144,15 +186,17 @@ ExecResult VM::run(uint32_t maxInstr)
             _CHECK_REGISTER_VALID(reg1)
             _CHECK_REGISTER_VALID(reg2)
             _CHECK_CAN_POP(2)
-            this->_registers[reg1] = this->_stack[--this->_registers[SP]];
-            this->_registers[reg2] = this->_stack[--this->_registers[SP]];
+            memcpy(&this->_registers[reg1], &this->_memory[this->_registers[SP]], sizeof(uint32_t));
+            this->_registers[SP] += 4;
+            memcpy(&this->_registers[reg2], &this->_memory[this->_registers[SP]], sizeof(uint32_t));
+            this->_registers[SP] += 4;
             break;
         }
         case OP_DUP:
         {
             _CHECK_CAN_PUSH(1)
-            this->_stack[this->_registers[SP]] = this->_stack[this->_registers[SP] - 1];
-            this->_registers[SP]++;
+            this->_registers[SP] -= 4;
+            memcpy(&this->_memory[this->_registers[SP]], &this->_memory[this->_registers[SP]] + 4, sizeof(uint32_t));
             break;
         }
         case OP_CALL:
@@ -174,7 +218,19 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
             _CHECK_ADDR_VALID((uint32_t)addr + 3)
-            memcpy(&this->_program[addr], &this->_registers[reg], sizeof(uint32_t));
+            memcpy(&this->_memory[addr], &this->_registers[reg], sizeof(uint32_t));
+            break;
+        }
+        case OP_STOR_P:
+        {
+            _CHECK_BYTES_AVAIL(2)
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            _CHECK_REGISTER_VALID(reg1)
+            _CHECK_REGISTER_VALID(reg2)
+            const uint16_t dest = this->_registers[reg1];
+            _CHECK_ADDR_VALID((uint32_t)dest + 3)
+            memcpy(&this->_memory[dest], &this->_registers[reg2], sizeof(uint32_t));
             break;
         }
         case OP_STORW:
@@ -184,7 +240,19 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
             _CHECK_ADDR_VALID((uint32_t)addr + 1)
-            memcpy(&this->_program[addr], &this->_registers[reg], sizeof(uint16_t));
+            memcpy(&this->_memory[addr], &this->_registers[reg], sizeof(uint16_t));
+            break;
+        }
+        case OP_STORW_P:
+        {
+            _CHECK_BYTES_AVAIL(2)
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            _CHECK_REGISTER_VALID(reg1)
+            _CHECK_REGISTER_VALID(reg2)
+            const uint16_t dest = this->_registers[reg1];
+            _CHECK_ADDR_VALID((uint32_t)dest + 1)
+            memcpy(&this->_memory[dest], &this->_registers[reg2], sizeof(uint16_t));
             break;
         }
         case OP_STORB:
@@ -194,7 +262,19 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
             _CHECK_ADDR_VALID(addr)
-            memcpy(&this->_program[addr], &this->_registers[reg], sizeof(uint8_t));
+            memcpy(&this->_memory[addr], &this->_registers[reg], sizeof(uint8_t));
+            break;
+        }
+        case OP_STORB_P:
+        {
+            _CHECK_BYTES_AVAIL(2)
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            _CHECK_REGISTER_VALID(reg1)
+            _CHECK_REGISTER_VALID(reg2)
+            const uint16_t dest = this->_registers[reg1];
+            _CHECK_ADDR_VALID((uint32_t)dest)
+            memcpy(&this->_memory[dest], &this->_registers[reg2], sizeof(uint8_t));
             break;
         }
         case OP_LOAD:
@@ -204,7 +284,19 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint16_t addr = _NEXT_SHORT;
             _CHECK_REGISTER_VALID(reg)
             _CHECK_ADDR_VALID((uint32_t)addr + 3)
-            memcpy(&this->_registers[reg], &this->_program[addr], sizeof(uint32_t));
+            memcpy(&this->_registers[reg], &this->_memory[addr], sizeof(uint32_t));
+            break;
+        }
+        case OP_LOAD_P:
+        {
+            _CHECK_BYTES_AVAIL(2)
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            _CHECK_REGISTER_VALID(reg1)
+            _CHECK_REGISTER_VALID(reg2)
+            const uint16_t src = this->_registers[reg2];
+            _CHECK_ADDR_VALID((uint32_t)src + 3)
+            memcpy(&this->_registers[reg1], &this->_memory[src], sizeof(uint32_t));
             break;
         }
         case OP_LOADW:
@@ -215,7 +307,20 @@ ExecResult VM::run(uint32_t maxInstr)
             _CHECK_REGISTER_VALID(reg)
             _CHECK_ADDR_VALID((uint32_t)addr + 1)
             this->_registers[reg] = 0;
-            memcpy(&this->_registers[reg], &this->_program[addr], sizeof(uint16_t));
+            memcpy(&this->_registers[reg], &this->_memory[addr], sizeof(uint16_t));
+            break;
+        }
+        case OP_LOADW_P:
+        {
+            _CHECK_BYTES_AVAIL(2)
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            _CHECK_REGISTER_VALID(reg1)
+            _CHECK_REGISTER_VALID(reg2)
+            const uint16_t src = this->_registers[reg2];
+            _CHECK_ADDR_VALID((uint32_t)src + 1)
+            this->_registers[reg1] = 0;
+            memcpy(&this->_registers[reg1], &this->_memory[src], sizeof(uint16_t));
             break;
         }
         case OP_LOADB:
@@ -225,7 +330,19 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint16_t addr = _NEXT_SHORT;
             _CHECK_REGISTER_VALID(reg)
             _CHECK_ADDR_VALID((uint32_t)addr)
-            this->_registers[reg] = this->_program[addr];
+            this->_registers[reg] = this->_memory[addr];
+            break;
+        }
+        case OP_LOADB_P:
+        {
+            _CHECK_BYTES_AVAIL(2)
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            _CHECK_REGISTER_VALID(reg1)
+            _CHECK_REGISTER_VALID(reg2)
+            const uint16_t src = this->_registers[reg2];
+            _CHECK_ADDR_VALID((uint32_t)src)
+            this->_registers[reg1] = this->_memory[src];
             break;
         }
         case OP_MEMCPY:
@@ -236,7 +353,24 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint16_t bytes = _NEXT_SHORT;
             _CHECK_ADDR_VALID((uint32_t)source + bytes - 1)
             _CHECK_ADDR_VALID((uint32_t)dest + bytes - 1)
-            memcpy((void *)&this->_program[dest], (void *)&this->_program[source], bytes);
+            memcpy(&this->_memory[dest], &this->_memory[source], bytes);
+            break;
+        }
+        case OP_MEMCPY_P:
+        {
+            _CHECK_BYTES_AVAIL(3)
+            const uint8_t reg1 = _NEXT_BYTE;
+            const uint8_t reg2 = _NEXT_BYTE;
+            const uint8_t reg3 = _NEXT_BYTE;
+            _CHECK_REGISTER_VALID(reg1)
+            _CHECK_REGISTER_VALID(reg2)
+            _CHECK_REGISTER_VALID(reg3)
+            const uint16_t dest = this->_registers[reg1];
+            const uint16_t source = this->_registers[reg2];
+            const uint16_t bytes = this->_registers[reg3];
+            _CHECK_ADDR_VALID((uint32_t)source + bytes - 1)
+            _CHECK_ADDR_VALID((uint32_t)dest + bytes - 1)
+            memcpy(&this->_memory[dest], &this->_memory[source], bytes);
             break;
         }
         case OP_INC:
@@ -774,7 +908,7 @@ ExecResult VM::run(uint32_t maxInstr)
             _CHECK_BYTES_AVAIL(2)
             const uint16_t addr = _NEXT_SHORT;
             _CHECK_ADDR_VALID(addr)
-            char *curChar = (char *)&this->_program[addr];
+            char *curChar = (char *)&this->_memory[addr];
 
             while (*curChar != '\0')
             {
@@ -784,7 +918,7 @@ ExecResult VM::run(uint32_t maxInstr)
                 putchar(*curChar);
 #endif
                 curChar++;
-                _CHECK_ADDR_VALID((uint8_t *)curChar - this->_program)
+                _CHECK_ADDR_VALID((uint8_t *)curChar - this->_memory)
             }
             break;
         }
@@ -851,7 +985,7 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint16_t addr = _NEXT_SHORT;
             size_t maxLen = _NEXT_SHORT;
             _CHECK_ADDR_VALID((uint32_t)addr + maxLen)
-            char *dest = (char *)&this->_program[addr];
+            char *dest = (char *)&this->_memory[addr];
 #ifdef ARDUINO
             return ExecResult::VM_ERR_UNSUPPORTED_OPCODE;
 #else
