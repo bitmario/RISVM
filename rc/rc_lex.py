@@ -11,6 +11,7 @@ KEYWORDS = (
     # "FOR",
     "BREAK",
     "RETURN",
+    "PRINT",
 )
 
 tokens = KEYWORDS + (
@@ -107,7 +108,7 @@ t_WHILE = r"while"
 #t_FOR = r"for"
 t_BREAK = r"break"
 t_RETURN = r"return"
-#t_PRINT = r"print"
+t_PRINT = r"print"
 #t_INPUT = r"input"
 #t_STR = r"str"
 #t_NUM = r"num"

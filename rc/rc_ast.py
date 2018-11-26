@@ -149,6 +149,15 @@ class WhileStatement(Node):
         visitor.visit_WhileStatement(self)
 
 
+class PrintStatement(Node):
+    def __init__(self, expr):
+        super().__init__()
+        self.expr = expr
+
+    def accept(self, visitor):
+        visitor.visit_PrintStatement(self)
+
+
 class UnaryOp(Node):
     def __init__(self, op, right):
         super().__init__()

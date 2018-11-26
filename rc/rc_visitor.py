@@ -115,6 +115,11 @@ class PrintVisitor:
         self.add(")")
         self.child_accept(node, node.body)
 
+    def visit_PrintStatement(self, node):
+        self.addline("print (")
+        self.child_accept(node, node.expr)
+        self.add(");")
+
     def visit_UnaryOp(self, node):
         self.add(node.op)
         self.child_accept(node, node.right)

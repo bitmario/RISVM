@@ -1,6 +1,5 @@
 
 call  .main
-printi  t0, 1
 halt
 .main:
     push  r0
@@ -19,20 +18,20 @@ halt
     lconsw  r5, 4
     sub  r5, bp, r5
     stor_p  r5, r0
-.loc_KPQEMM:
+.loc_J0SXET:
     lconsw  r5, 4
     sub  r5, bp, r5
     load_p  r0, r5
     push  r0
-    lcons  r0, 100000
+    lcons  r0, 10000
     pop  r1
-    jl  r1, r0, .loc_O71WHV
+    jl  r1, r0, .loc_BR1P2H
     lconsb  r0, 0
-    jmp  .loc_ICLSH9
-.loc_O71WHV:
+    jmp  .loc_R8JJWL
+.loc_BR1P2H:
     lconsb  r0, 1
-.loc_ICLSH9:
-    jz  r0, .loc_02I413
+.loc_R8JJWL:
+    jz  r0, .loc_3ZSTD3
     lcons  r0, 1
     lconsw  r5, 12
     sub  r5, bp, r5
@@ -41,7 +40,7 @@ halt
     lconsw  r5, 8
     sub  r5, bp, r5
     stor_p  r5, r0
-.loc_3FRN9B:
+.loc_79XX2T:
     lconsw  r5, 8
     sub  r5, bp, r5
     load_p  r0, r5
@@ -50,13 +49,13 @@ halt
     sub  r5, bp, r5
     load_p  r0, r5
     pop  r1
-    jl  r1, r0, .loc_S2OWLV
+    jl  r1, r0, .loc_ZKL7RB
     lconsb  r0, 0
-    jmp  .loc_39HGJG
-.loc_S2OWLV:
+    jmp  .loc_Y5F7FI
+.loc_ZKL7RB:
     lconsb  r0, 1
-.loc_39HGJG:
-    jz  r0, .loc_R20GKA
+.loc_Y5F7FI:
+    jz  r0, .loc_XS7W3O
     lconsw  r5, 4
     sub  r5, bp, r5
     load_p  r0, r5
@@ -69,46 +68,48 @@ halt
     push  r0
     lcons  r0, 0
     pop  r1
-    je  r1, r0, .loc_E3ODPX
+    je  r1, r0, .loc_HV9WQW
     lconsb  r0, 0
-    jmp  .loc_3WZ5I6
-.loc_E3ODPX:
+    jmp  .loc_VAYX89
+.loc_HV9WQW:
     lconsb  r0, 1
-.loc_3WZ5I6:
-    jz  r0, .loc_SQZ9EW
+.loc_VAYX89:
+    jz  r0, .loc_OB9VZD
     lcons  r0, 0
     lconsw  r5, 12
     sub  r5, bp, r5
     stor_p  r5, r0
-    jmp  .loc_R20GKA
-.loc_SQZ9EW:
+    jmp  .loc_XS7W3O
+.loc_OB9VZD:
     lconsw  r5, 8
     sub  r5, bp, r5
     load_p  r0, r5
     inc  r0
     stor_p  r5, r0
-    jmp  .loc_3FRN9B
-.loc_R20GKA:
+    jmp  .loc_79XX2T
+.loc_XS7W3O:
     lconsw  r5, 12
     sub  r5, bp, r5
     load_p  r0, r5
-    jz  r0, .loc_JTMFSD
+    jz  r0, .loc_8V5S92
     lconsw  r5, 16
     sub  r5, bp, r5
     load_p  r0, r5
     inc  r0
     stor_p  r5, r0
-.loc_JTMFSD:
+.loc_8V5S92:
     lconsw  r5, 4
     sub  r5, bp, r5
     load_p  r0, r5
     inc  r0
     stor_p  r5, r0
-    jmp  .loc_KPQEMM
-.loc_02I413:
+    jmp  .loc_J0SXET
+.loc_3ZSTD3:
     lconsw  r5, 16
     sub  r5, bp, r5
     load_p  r0, r5
+    printi  r0, 1
+    lcons  r0, 0
     mov  t0, r0
     mov  sp, bp
     pop  bp

@@ -121,6 +121,7 @@ def p_statement(p):
                  | return_statement
                  | if_statement
                  | while_statement
+                 | print_statement
                  | expr_statement
                  | var_decl"""
     p[0] = p[1]
@@ -153,6 +154,11 @@ def p_statement_if(p):
 def p_statement_while(p):
     """while_statement : WHILE LPAREN expression RPAREN statement_block"""
     p[0] = ast.WhileStatement(p[3], p[5])
+
+
+def p_statement_print(p):
+    """print_statement : PRINT LPAREN expression RPAREN SEMI"""
+    p[0] = ast.PrintStatement(p[3])
 
 
 def p_statement_expr(p):

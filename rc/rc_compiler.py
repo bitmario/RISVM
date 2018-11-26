@@ -97,6 +97,9 @@ class ASMCompiler(Compiler):
     def emit_halt(self):
         self.addline("halt")
 
+    def emit_printi(self, reg, newline=1):
+        self.addline("printi  {}, {}".format(reg, newline))
+
     def emit_inc(self, reg):
         self.addline("inc  {}".format(reg))
 
@@ -185,7 +188,6 @@ class ASMCompileVisitor(ASMCompiler):
 
     def visit_Program(self, node):
         self.emit_call("main")
-        self.addline("printi  t0, 1")
         self.emit_halt()
         for c in node.items:
             self.child_accept(node, c)
@@ -297,6 +299,10 @@ class ASMCompileVisitor(ASMCompiler):
 
         self.emit_jmp(start_label)
         self.emit_label(end_label)
+
+    def visit_PrintStatement(self, node):
+        self.child_accept(node, node.expr)
+        self.emit_printi("r0")
 
     def visit_UnaryOp(self, node):
         self.child_accept(node, node.right)

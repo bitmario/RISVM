@@ -182,6 +182,9 @@ class SemanticAnalyzer:
         self.child_accept(node, node.condition)
         self.child_accept(node, node.body)
 
+    def visit_PrintStatement(self, node):
+        self.child_accept(node, node.expr)
+
     def visit_UnaryOp(self, node):
         self.child_accept(node, node.right)
 
