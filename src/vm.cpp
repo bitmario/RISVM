@@ -840,16 +840,9 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t ln = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
 
-#ifdef ARDUINO
-            if (ln == 0)
-                Serial.printf("%u", this->_registers[reg]);
-            else
-                Serial.printf("%u\n", this->_registers[reg]);
-#else
             printf("%u", this->_registers[reg]);
             if (ln != 0)
                 putchar('\n');
-#endif
             break;
         }
         case OP_PRINTI:
@@ -859,16 +852,9 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t ln = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
 
-#ifdef ARDUINO
-            if (ln == 0)
-                Serial.printf("%d", *((int32_t *)&this->_registers[reg]));
-            else
-                Serial.printf("%d\n", *((int32_t *)&this->_registers[reg]));
-#else
             printf("%d", *((int32_t *)&this->_registers[reg]));
             if (ln != 0)
                 putchar('\n');
-#endif
             break;
         }
         case OP_PRINTF:
@@ -878,16 +864,9 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t ln = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
 
-#ifdef ARDUINO
-            if (ln == 0)
-                Serial.printf("%f", *((float *)&this->_registers[reg]));
-            else
-                Serial.printf("%f\n", *((float *)&this->_registers[reg]));
-#else
             printf("%f", *((float *)&this->_registers[reg]));
             if (ln != 0)
                 putchar('\n');
-#endif
             break;
         }
         case OP_PRINTC:
@@ -896,11 +875,7 @@ ExecResult VM::run(uint32_t maxInstr)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
             char *c = (char *)&this->_registers[reg];
-#ifdef ARDUINO
-            Serial.print(*c);
-#else
             putchar(*c);
-#endif
             break;
         }
         case OP_PRINTS:
@@ -912,11 +887,7 @@ ExecResult VM::run(uint32_t maxInstr)
 
             while (*curChar != '\0')
             {
-#ifdef ARDUINO
-                Serial.print(curChar);
-#else
                 putchar(*curChar);
-#endif
                 curChar++;
                 _CHECK_ADDR_VALID((uint8_t *)curChar - this->_memory)
             }
@@ -924,11 +895,7 @@ ExecResult VM::run(uint32_t maxInstr)
         }
         case OP_PRINTLN:
         {
-#ifdef ARDUINO
-            Serial.println();
-#else
             putchar('\n');
-#endif
             break;
         }
         case OP_READ:
@@ -936,11 +903,7 @@ ExecResult VM::run(uint32_t maxInstr)
             _CHECK_BYTES_AVAIL(1)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
-#ifdef ARDUINO
-            return ExecResult::VM_ERR_UNSUPPORTED_OPCODE;
-#else
             scanf("%u", &this->_registers[reg]);
-#endif
             break;
         }
         case OP_READI:
@@ -948,11 +911,7 @@ ExecResult VM::run(uint32_t maxInstr)
             _CHECK_BYTES_AVAIL(1)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
-#ifdef ARDUINO
-            return ExecResult::VM_ERR_UNSUPPORTED_OPCODE;
-#else
             scanf("%d", (int32_t *)&this->_registers[reg]);
-#endif
             break;
         }
         case OP_READF:
@@ -960,11 +919,7 @@ ExecResult VM::run(uint32_t maxInstr)
             _CHECK_BYTES_AVAIL(1)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
-#ifdef ARDUINO
-            return ExecResult::VM_ERR_UNSUPPORTED_OPCODE;
-#else
             scanf("%f", (float *)&this->_registers[reg]);
-#endif
             break;
         }
         case OP_READC:
@@ -972,11 +927,7 @@ ExecResult VM::run(uint32_t maxInstr)
             _CHECK_BYTES_AVAIL(1)
             const uint8_t reg = _NEXT_BYTE;
             _CHECK_REGISTER_VALID(reg)
-#ifdef ARDUINO
-            return ExecResult::VM_ERR_UNSUPPORTED_OPCODE;
-#else
             this->_registers[reg] = getchar();
-#endif
             break;
         }
         case OP_READS:
@@ -986,75 +937,9 @@ ExecResult VM::run(uint32_t maxInstr)
             size_t maxLen = _NEXT_SHORT;
             _CHECK_ADDR_VALID((uint32_t)addr + maxLen)
             char *dest = (char *)&this->_memory[addr];
-#ifdef ARDUINO
-            return ExecResult::VM_ERR_UNSUPPORTED_OPCODE;
-#else
             getline(&dest, &maxLen, stdin);
-#endif
             break;
         }
-#ifdef ARDUINO
-        case OP_A_DR:
-        {
-            _CHECK_BYTES_AVAIL(2)
-            const uint8_t reg = _NEXT_BYTE;
-            const uint8_t pin = _NEXT_BYTE;
-            _CHECK_REGISTER_VALID(reg)
-            this->_registers[reg] = digitalRead(pin);
-            break;
-        }
-        case OP_A_AR:
-        {
-            _CHECK_BYTES_AVAIL(2)
-            const uint8_t reg = _NEXT_BYTE;
-            const uint8_t pin = _NEXT_BYTE;
-            _CHECK_REGISTER_VALID(reg)
-            this->_registers[reg] = analogRead(pin);
-            break;
-        }
-        case OP_A_DW:
-        {
-            _CHECK_BYTES_AVAIL(2)
-            const uint8_t pin = _NEXT_BYTE;
-            const uint8_t state = _NEXT_BYTE;
-            digitalWrite(pin, state);
-            break;
-        }
-        case OP_A_AW:
-        {
-            _CHECK_BYTES_AVAIL(2)
-            const uint8_t pin = _NEXT_BYTE;
-            const uint16_t val = _NEXT_SHORT;
-            analogWrite(pin, val);
-            break;
-        }
-        case OP_A_DWR:
-        {
-            _CHECK_BYTES_AVAIL(2)
-            const uint8_t pin = _NEXT_BYTE;
-            const uint8_t reg = _NEXT_BYTE;
-            _CHECK_REGISTER_VALID(reg)
-            digitalWrite(pin, this->_registers[reg]);
-            break;
-        }
-        case OP_A_AWR:
-        {
-            _CHECK_BYTES_AVAIL(2)
-            const uint8_t pin = _NEXT_BYTE;
-            const uint8_t reg = _NEXT_BYTE;
-            _CHECK_REGISTER_VALID(reg)
-            analogWrite(pin, this->_registers[reg]);
-            break;
-        }
-        case OP_A_PM:
-        {
-            _CHECK_BYTES_AVAIL(2)
-            const uint8_t pin = _NEXT_BYTE;
-            const uint8_t mode = _NEXT_BYTE;
-            pinMode(pin, mode);
-            break;
-        }
-#endif
         }
 
         this->_registers[IP]++;

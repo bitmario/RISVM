@@ -417,20 +417,6 @@ def process_instruction(bytecode, line):
         unop(bytecode, params, Opcodes.READC)
     elif opcode == "reads":
         binop_cc(bytecode, params, Opcodes.READS, 2, 2)
-    elif opcode == "a_dr":
-        binop_rc(bytecode, params, Opcodes.A_DR, 1)
-    elif opcode == "a_ar":
-        binop_rc(bytecode, params, Opcodes.A_AR, 1)
-    elif opcode == "a_dw":
-        binop_cc(bytecode, params, Opcodes.A_DW, 1, 1)
-    elif opcode == "a_aw":
-        binop_cc(bytecode, params, Opcodes.A_AW, 1, 2)
-    elif opcode == "a_dwr":
-        binop_cr(bytecode, params, Opcodes.A_DWR, 1)
-    elif opcode == "a_awr":
-        binop_cr(bytecode, params, Opcodes.A_AWR, 1)
-    elif opcode == "a_pm":
-        binop_cc(bytecode, params, Opcodes.A_PM, 1, 1)
     elif opcode == "halt":
         singleop(bytecode, params, Opcodes.HALT)
     elif opcode == "int":

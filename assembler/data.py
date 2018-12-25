@@ -126,12 +126,3 @@ class Opcodes(AutoNumber):
     READF = ()   # read a float from stdin to the specified register
     READC = ()   # read a single character's code from stdin to the specified register
     READS = ()   # read a line to the specified memory address, to a maximum length
-    # Arduino:
-    # TODO: pinMode()
-    A_DR = ()  # digital read from a pin to a register = () e.g.: dr r0 = () 0x0A
-    A_AR = ()  # analog read from a pin to a register = () e.g.: ar r0 = () 0x0A
-    A_DW = ()  # digital write to a pin (on/off) = () e.g.: dw 0xA = () 0x1
-    A_AW = ()  # analog write a short value to a pin = () e.g.: aw 0xA = () 0xFF 0x00
-    A_DWR = () # digital write with a value from a register = () e.g.: dwr 0xA = () r1
-    A_AWR = () # analog write with a value from a register = () e.g.: awr 0xA = () r1
-    A_PM = ()  # set pin mode = () e.g.: a_pm 0xA = () 0x0
